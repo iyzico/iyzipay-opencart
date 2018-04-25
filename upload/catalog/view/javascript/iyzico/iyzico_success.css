@@ -1,0 +1,11 @@
+.orderDetail .text-left {
+  padding: 5px;
+}
+
+.orderDetail {
+    margin: auto;
+    padding: 20px;
+}
+.successPayment {
+text-align:center;
+}

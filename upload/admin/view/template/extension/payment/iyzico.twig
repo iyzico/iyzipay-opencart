@@ -1,0 +1,363 @@
+{{ header }}{{ column_left }}
+<div id="content">
+    <ul class="breadcrumb">
+        {% for breadcrumb in breadcrumbs %}
+            <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+        {% endfor %}
+    </ul>
+    <div class="page-header">
+        <div class="container-fluid">
+            <div class="pull-right">
+                <button type="submit" form="form-payment" data-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary"><i class="fa fa-save"></i></button>
+                <a href="{{ cancel }}" data-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-default"><i class="fa fa-reply"></i></a></div>
+                <h1><i class="fa fa-credit-card"></i> {{ heading_title }}</h1>
+            </div>
+    </div>
+    <div class="container-fluid">
+        <div class="panel-body">
+            <form action="{{ action }}" method="post" enctype="multipart/form-data" id="form-payment" onsubmit="return getApiValid()" class="form-horizontal">
+            <ul class="nav nav-tabs">
+            {% if install_status >= 6 %}
+                    <li class="active"><a href="#tab-general" data-toggle="tab">{{settings}}</a></li>
+            {% else  %}
+                    <li class="active"><a href="#tab-general" data-toggle="tab">{{install}}</a></li>
+            {% endif %}
+               
+                    <li><a href="#tab-buyer-protection" data-toggle="tab">{{buyer_protection}}</a></li>
+                    <li><a href="#tab-help" data-toggle="tab">{{help}}</a></li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane active" id="tab-general">
+                        {% if install_status >= 6 %}
+                            <div class="panel panel-primary">
+                                  <div class="panel-heading">Iyzico</div>
+                                  <div class="panel-body">
+                                    {{install_hello}} {{ firstname }}, {{settings_content}} 
+                                    <br>
+                            {% if api_status  %}
+                                    <strong>{{api_connection}}</strong> <strong style="color:green;">{{api_connection_success}}</strong>
+                                    <br>
+                            {% else  %} 
+                                    <strong>{{api_connection}}</strong> <strong style="color:red;">{{api_connection_failed}}</strong>
+                                    <br>
+                                    {{api_connection_failed_content}} <a href="#">{{support}}</a>
+                            {% endif  %}
+                                </div>
+                            </div>
+                        {% else  %}
+                            <div class="panel panel-primary">
+                              <div class="panel-heading">{{install_title}}</div>
+                              <div class="panel-body">{{install_hello}} {{ firstname }}, {{install_content}}</div>
+                            </div>
+                        {% endif %}
+
+                        <div class="form-group required">
+                            <label class="col-sm-2 control-label" for="test">{{ api_field }}
+                                <span data-toggle="tooltip" title="{{ api_field_tooltip }}"></span>
+                            </label>
+                            <div class="col-sm-10">
+                                <select class="form-control" id="api_channel" name="payment_iyzico_api_channel">
+                                {% if payment_iyzico_api_channel == 'live'  %} 
+                                    <option value="live" selected="selected">{{ live }}</option>
+                                    <option value="sandbox">{{ sandbox }}</option>
+                                {% elseif payment_iyzico_api_channel == 'sandbox' %} 
+                                    <option value="live">{{ live }}</option>
+                                    <option value="sandbox"  selected="selected">{{ sandbox }}</option>
+                                {% else   %} 
+                                    <option value="live">{{ live }}</option>
+                                    <option value="sandbox">{{ sandbox }}</option>
+                                {%  endif %} 
+                                </select>
+                            {% if error_api_channel %}
+                                <div class="text-danger">{{ error_api_channel }}</div>
+                            {% endif %} 
+                            </div>
+                        </div>
+                        <div class="form-group required">
+                            <label class="col-sm-2 control-label"  for="test">{{ api_key }}
+                                <span data-toggle="tooltip" title="{{ apikey_field_tooltip }}"></span>
+                            </label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="api_key" value="{{payment_iyzico_api_key}}" name="payment_iyzico_api_key" placeholder="{{ api_key }}" />
+                            {% if error_api_key %}
+                                <div class="text-danger">{{ error_api_key }}</div>
+                            {% endif %}
+                            </div> 
+                        </div>
+                        <div class="form-group required">
+                            <label class="col-sm-2 control-label" for="test">{{ secret_key }}
+                                <span data-toggle="tooltip" title="{{ secretkey_field_tooltip }}"></span>
+                            </label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="secret_key" value="{{payment_iyzico_secret_key}}" name="payment_iyzico_secret_key" placeholder="{{ secret_key }}" />
+                            {% if error_secret_key %}
+                                <div class="text-danger">{{ error_secret_key }}</div>
+                            {% endif %}
+                            </div> 
+                        </div>
+                        <div class="form-group required">
+                            <label class="col-sm-2 control-label" for="test">{{ view_select }}
+                                <span data-toggle="tooltip" title="{{ design_field_tooltip }}"></span>
+
+                            </label>
+                            <div class="col-sm-10">
+                                <select class="form-control" name="payment_iyzico_design">
+                                    <option value="">{{ general_select }}</option>
+                                {% if payment_iyzico_design == 'popup'  %} 
+                                    <option value="popup" selected="selected">Popup</option>
+                                    <option value="responsive">Responsive</option>
+                                    <option value="onepage">One Page - Embed Responsive</option>
+                                {% elseif payment_iyzico_design == 'responsive' %}
+                                    <option value="popup">Popup</option>
+                                    <option value="responsive" selected="selected">Responsive</option>
+                                    <option value="onepage">One Page - Embed Responsive</option>
+                                {% elseif payment_iyzico_design == 'onepage' %}
+                                    <option value="popup">Popup</option>
+                                    <option value="responsive">Responsive</option>
+                                    <option value="onepage"  selected="selected">One Page - Embed Responsive</option>
+                                {% else %}
+                                    <option value="popup">Popup</option>
+                                    <option value="responsive">Responsive</option>
+                                    <option value="onepage">One Page - Embed Responsive</option>
+
+                                {% endif %} 
+                                </select>
+                            {% if error_design %}
+                                <div class="text-danger">{{ error_design }}</div>
+                            {% endif %}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label"  for="test">{{ payment_title }}
+                                <span data-toggle="tooltip" title="{{ payment_title_tooltip }}"></span>
+
+                            </label>
+                            <div class="col-sm-10">
+                            {% if payment_iyzico_title %}
+                                <input type="text" class="form-control"  value="{{payment_iyzico_title}}" name="payment_iyzico_title" placeholder="{{ payment_title }}" />
+                            {% else %}
+                                <input type="text" class="form-control"  value="tr=Kredi ve Banka Kartı - iyzico|en=Credit and Bank Debit - iyzico" name="payment_iyzico_title" placeholder="{{ payment_title }}" />
+                            {% endif %}
+                            </div> 
+                        </div>
+                        <div class="form-group required">
+                            <label class="col-sm-2 control-label" for="test">{{order_status}}
+                                <span data-toggle="tooltip" title="{{ order_status_tooltip }}"></span>
+                            </label>
+                            <div class="col-sm-10">
+                                <select class="form-control" name="payment_iyzico_order_status">
+                                    {% for order_status in order_statuses %}
+                                        {% if order_status.order_status_id == payment_iyzico_order_status %}  
+                                            <option value="{{ order_status.order_status_id }}" selected="selected">{{ order_status.name }}</option>
+                                        {% else %}
+                                            {% if payment_iyzico_order_status == false and order_status.order_status_id == 5  %}  
+                                                <option value="{{ order_status.order_status_id }}" selected="selected">{{ order_status.name }}</option>
+                                            {% endif %}
+                                            <option value="{{ order_status.order_status_id }}" >{{ order_status.name }}</option>
+                                        {% endif %}
+                                    {% endfor %}
+                                </select>
+                                {% if error_order_status %}
+                                    <div class="text-danger">{{ error_order_status }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="form-group required">
+                            <label class="col-sm-2 control-label" for="test">{{cancel_order_status}}
+                                <span data-toggle="tooltip" title="{{ cancel_order_status_tooltip }}"></span>
+                            </label>
+                            <div class="col-sm-10">
+                                <select class="form-control" name="payment_iyzico_order_cancel_status">
+                                    {% for order_status in order_statuses %}
+                                        {% if order_status.order_status_id == payment_iyzico_order_cancel_status %}  
+                                            <option value="{{ order_status.order_status_id }}" selected="selected">{{ order_status.name }}</option>
+                                        {% else %}
+                                            {% if payment_iyzico_order_status == false and order_status.order_status_id == 7  %}  
+                                                <option value="{{ order_status.order_status_id }}" selected="selected">{{ order_status.name }}</option>
+                                            {% endif %}
+                                            <option value="{{ order_status.order_status_id }}">{{ order_status.name }}</option>
+                                        {% endif %}
+                                    {% endfor %}
+                                </select>
+                                {% if error_cancel_order_status %}
+                                    <div class="text-danger">{{ error_cancel_order_status }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="test">{{ extension_status }}</label>
+                            <div class="col-sm-10">
+                                <select class="form-control" name="payment_iyzico_status">
+                                    <option value="">{{ general_select }}</option>
+                                    {% if payment_iyzico_status == 1 %}
+                                        <option value="1" selected="selected">{{ text_enabled }}</option>
+                                        <option value="0">{{text_disabled}}</option>
+                                    {% else %}
+                                        <option value="1" >{{ text_enabled }}</option>
+                                        <option value="0" selected="selected">{{text_disabled}}</option>
+                                    {% endif %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="input-order-status">{{ sort_order  }}</label>
+                            <div class="col-sm-10">
+                                <input type="text" name="payment_iyzico_sort_order" value="{{payment_iyzico_sort_order}}" placeholder="{{ sort_order}}" size="1" class="form-control"/>
+                            </div>
+                        </div>
+                        <button style="float:right;" type="submit" form="form-payment" data-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary"><i class="fa fa-save"></i></button>
+                    </div>
+                    <div class="tab-pane" id="tab-buyer-protection">
+                        <div class="form-group" style="width:300px;margin:auto;">
+                            <div class="col-sm-10"  style="text-align:center;">
+                                        <img src="https://media.iyzico.com/b/2018/01/buyerProtectionLogo100@2x.png" />
+                                <div class="form-group">
+                                    <p>{{ overlay_design }}</p>
+                                    <br>
+                                    <div class="col-sm-12">
+                                        <select class="form-control" name="payment_iyzico_overlay_status">
+                                            <option value="">{{ general_select }}</option>
+                                            {% if payment_iyzico_overlay_status == 'bottomLeft' %}
+                                                <option value="{{overlay_bottom_left_val}}" selected="selected">{{ overlay_bottom_left }}</option>
+                                                <option value="{{overlay_bottom_right_val}}">{{overlay_bottom_right}}</option>
+                                                <option value="{{overlay_closed_val}}">{{overlay_closed}}</option>
+                                            {% elseif payment_iyzico_overlay_status == 'bottomRight' %}
+                                                 <option value="{{overlay_bottom_left_val}}">{{ overlay_bottom_left }}</option>
+                                                <option value="{{overlay_bottom_right_val}}"  selected="selected">{{overlay_bottom_right}}</option>
+                                                <option value="{{overlay_closed_val}}">{{overlay_closed}}</option>
+                                            {% elseif payment_iyzico_overlay_status == 'closed' %}
+                                                <option value="{{overlay_bottom_left_val}}">{{ overlay_bottom_left }}</option>
+                                                <option value="{{overlay_bottom_right_val}}">{{overlay_bottom_right}}</option>
+                                                <option value="{{overlay_closed_val}}" selected="selected">{{overlay_closed}}</option>
+                                            {% else  %}
+                                                <option value="{{overlay_bottom_left_val}}">{{ overlay_bottom_left }}</option>
+                                                <option value="{{overlay_bottom_right_val}}">{{overlay_bottom_right}}</option>
+                                                <option value="{{overlay_closed_val}}">{{overlay_closed}}</option>
+                                            {% endif %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-12">
+                            <h1>Korumalı Alışveriş Bilgi Kutucuğu Nedir?</h1>
+                            <p>Korumalı Alışveriş bilgi kutucuğu, iyzico’nun Korumalı Alışveriş programına dahil olan (ürününü kullanan) e-ticaret sitelerinin kullandığı bir araçtır. Müşterilerin, e-ticaret sitelerinden alışverişle ilgili yaşadığı güven sorununun önüne geçmeyi amaçlayan bu uygulamayı sitenizin sadece ödeme sayfasında değil, sitenizdeki tüm sayfalara ekleyerek ziyaretçilerinizin güvenini kazanabilir, satışlarınıza katkı sağlayabilirsiniz. </p>
+
+                            <p>E-ticaret müşterilerinin güvenmedikleri bir siteden alışveriş yapma olasılığı oldukça azdır. Bankacılık Düzenleme ve Denetleme Kurulu lisanslı iyzico’nun ‘Korumalı Alışveriş’ bilgi kutucuğu, o sitenin iyzico güvencesi altında olduğuna, ihtiyaç halinde iyzico destek ekibinin olası sorunları çözeceği anlamına gelir. Bu, alışveriş için sitenize gelen müşterilerinize güvenli alışveriş yapabilecekleri mesajı verir.</p>
+
+                            <p>Hesabınızda korumalı alışveriş aktif değilse <a href="mailto:destek@iyzico.com" target="_top">destek@iyizco.com</a> mail atabilirsiniz.</p>
+
+                            </div>
+                        </div>
+                    <div class="tab-pane" id="tab-help">
+                        <div class="form-group">
+                 
+                            {% if locale == 'tr' %}
+                                <div class="accordionBox">API bilgileri nedir ?</div>
+                                <div class="panelBox">
+                                    <p>API bilgileri şifrelenerek size özel olarak tanımlanmış anahtar bilgileridir.  Bu anahtarlar siteniz üzerinden İyzico servisleri ile iletişim kurmanızı sağlar.
+                                    </p>
+                                </div>
+                                <div class="accordionBox">Live  ve Sandbox  Nedir ?</div>
+                                <div class="panelBox">
+                                    <p><stong>Live</stong> ve <strong>Sandbox</strong> kullanacağınız API türünü yansıtmaktadır.</p>
+                                    <ul>
+                                        <li><strong>Live API</strong></li>
+                                    </ul>
+                                    <p>Müşterilerinizden gerçek ödeme almak için Live Api kullanılır.  Müşterilerinizin kartları aracılığıyla İyzico üzerinden ödeme alabilmeniz için kullanılır.</p>
+                                    <ul>
+                                        <li><strong>Sandbox API</strong></li>
+                                    </ul>
+                                    <p>Web sayfanızı müşterilerinize açmadan önce İyzico Api ile test yapmak için kullanılır. Yapılan istekler gerçek istekler değildir, sadece geliştirme amaçlı kullanılır.</p>
+                                </div>
+                                <div class="accordionBox">API bilgilerime nereden ulaşabilirim ?</div>
+                                <div class="panelBox">
+                                    <ul>
+                                        <li><strong>Live API</strong></li>
+                                    </ul>
+                                    <p><a href="https://merchant.iyzipay.com">https://merchant.iyzipay.com</a> adresi üzerinden müşteri bilgileriniz ile giriş yapınız. Panele eriştiğiniz sırada sağ üst köşede profil bilgilerinizi göreceksiniz. Profil bilgilerinizin üzerine tıkladıktan sonra “<strong>Ayarlar</strong>” menüsüne tıklayınız. “<strong>API Anahtları</strong>" alanından “<strong>API Anahtarı ve Güvenlik Anahtarı</strong>" bilgilerinizi kopyalayıp Opencart iyzico modülü panelinde bulunan “<strong>API Anahtarı</strong>” ve “<strong>Güvenlik Anahtarı</strong>” alanlarına yapıştırınız..</p>
+                                    <ul>
+                                        <li><strong>Sandbox API</strong></li>
+                                    </ul>
+                                    <p><a href="https://sandbox-merchant.iyzipay.com">https://sandbox-merchant.iyzipay.com</a> adresi üzerinden müşteri bilgileriniz ile giriş yapınız. Panele eriştiğiniz sırada sağ üst köşede profil bilgilerinizi göreceksiniz. Profil bilgilerinizin üzerine tıkladıktan sonra “<strong>Ayarlar</strong>” menüsüne tıklayınız. “<strong>API Anahtları</strong>" alanından “<strong>API Anahtarı ve Güvenlik Anahtarı</strong>" bilgilerinizi kopyalayıp Opencart iyzico modülü panelinde bulunan “<strong>API Anahtarı</strong>” ve “<strong>Güvenlik Anahtarı</strong>” alanlarına yapıştırınız..</p>
+                                    <p>Test ortamımız için <a href="https://sandbox-merchant.iyzipay.com/login">https://sandbox-merchant.iyzipay.com/login</a>  adresinden kayıt olup hemen sonrasında(mail onaysız) login olabiliyorsunuz.  Sandbox’ı test ederken <a href="https://dev.iyzipay.com/tr/test-kartlari">https://dev.iyzipay.com/tr/test-kartlari</a> adresindeki test kartlarını kullanabilirsiniz.</p>
+                                </div>
+                                <div class="accordionBox">Responsive ve Popup Nedir ?</div>
+                                <div class="panelBox">
+                                    <ul>
+                                        <li><strong>Responsive</strong></li>
+                                    </ul>
+                                    <p>Müşterileriniz ödeme adımına geldiği zaman  ödeme formunun Mobil ve Web uyumlu olarak görünmesini sağlar.</p>
+                                    <ul>
+                                        <li><strong>Popup</strong></li>
+                                    </ul>
+                                    <p>Müşterileriniz ödeme adımına geldiği zaman tüm ekranı şeffaf olarak kaplayan Mobil ve Web uyumlu İyzico ödeme formunun görünmesini sağlar.</p>
+                                </div>
+                                <div class="accordionBox">Korumalı Alışveriş Nedir ?</div>
+                                <div class="panelBox">
+                                    <p>Korumalı Alışveriş müşterilerinizin ve sizin İyzico güvencesi altında olduğunuzu belirten bir servistir.</p>
+                                    <p>Müşterilerinize <strong>İyzico Korumalı Alışveriş</strong>  güvencesi altında olduğunu göstermek için “Korumalı Alışveriş” sekmesinden Korumalı Alışveriş <strong>logosunun</strong> sayfanızın neresinde gözükmesini istediğinizi seçmeniz yeterlidir.</p>
+                                </div>
+                                <div class="accordionBox">Bağlantı durumu: “başarısız” sebebi ne olabilir ?</div>
+                                <div class="panelBox">
+                                    <ul>
+                                        <li><strong>API bilgilerinizi kontrol ettiniz mi ?</strong></li>
+                                    </ul>
+                                    <p>İyzico üzerinden aldığınız "<strong>API Anahtarı</strong>” ve “<strong>Güvenlik Anahtarı</strong>” bilgilerinin  doğru olduğundan emin olunuz.</p>
+                                    <ul>
+                                        <li><strong>TLS versiyonunuzu kontrol ettiniz mi ?</strong></li>
+                                    </ul>
+                                    <p>Sunucu sağlayıcınızla görüşerek OpenSSL versiyonunu minimum 1.0.1’e, curl versiyonunu 7.3.4 yukseltebilirsiniz.</p>
+                                    <ul>
+                                        <li><strong>Sorununuz hala devam ediyor mu ?</strong></li>
+                                    </ul>
+                                    <p>Bizimle iletişime geçebilirsiniz. Destek için: <a href="mailto:destek@iyzico.com" target="_top">destek@iyzico.com</a>
+                                </div>
+                             {% elseif locale == 'en' %}
+                            
+                             {% endif %}
+
+
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+var acc = document.getElementsByClassName("accordionBox");
+var i;
+
+for (i = 0; i < acc.length; i++) {
+    acc[i].addEventListener("click", function() {
+        this.classList.toggle("active");
+        var panel = this.nextElementSibling;
+        if (panel.style.display === "block") {
+            panel.style.display = "none";
+        } else {
+            panel.style.display = "block";
+        }
+    });
+}
+
+function getApiValid() {
+    var e, n, t;
+    return event.preventDefault(), e = document.getElementById("api_channel").value, n = document.getElementById("api_key").value, t = document.getElementById("secret_key").value, "live" == e ? l(n, t) : "sandbox" == e ? s(n, t) : (alert("Geçersiz istek."), !1)
+}
+
+function l(e, n) {
+    if ("sandbox-" == e.substring(0, 8) || "sandbox-" == n.substring(0, 8)) return alert("{{valid_live}}"), !1
+}
+
+function s(e, n) {
+    if ("sandbox-" != e.substring(0, 8) || "sandbox-" != n.substring(0, 8)) return alert("{{valid_sandbox}}"), !1
+}
+
+</script>
+<style>
+.panelBox p {
+    padding-left: 40px;
+}
+</style>
+{{ footer }}
