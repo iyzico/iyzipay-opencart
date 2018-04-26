@@ -169,6 +169,14 @@ class ControllerExtensionPaymentIyzico extends Controller {
             $iyzico_json = json_encode($detail_object);
             $request_response = $this->model_extension_payment_iyzico->createFormInitializeDetailRequest($iyzico_json,$authorization_data);
 
+            $iyzico_local_order = new stdClass;
+            $iyzico_local_order->payment_id         = !empty($request_response->paymentId) ? (int) $request_response->paymentId : '';
+            $iyzico_local_order->order_id           = (int) $this->session->data['order_id'];
+            $iyzico_local_order->total_amount       = !empty($request_response->paidPrice) ? (float) $request_response->paidPrice : '';
+            $iyzico_local_order->status             = $request_response->paymentStatus; 
+
+            $iyzico_order_insert  = $this->model_extension_payment_iyzico->insertIyzicoOrder($iyzico_local_order);
+            
             if($request_response->paymentStatus != 'SUCCESS' || $request_response->status != 'success' || $order_id != $request_response->basketId ) {
 
                 /* Redirect Error */
@@ -192,14 +200,6 @@ class ControllerExtensionPaymentIyzico extends Controller {
                 }   
        
             }
-
-            $iyzico_local_order = new stdClass;
-            $iyzico_local_order->payment_id         = !empty($request_response->paymentId) ? (int) $request_response->paymentId : '';
-            $iyzico_local_order->order_id           = (int) $this->session->data['order_id'];
-            $iyzico_local_order->total_amount       = !empty($request_response->paidPrice) ? (float) $request_response->paidPrice : '';
-            $iyzico_local_order->status             = $request_response->paymentStatus; 
-
-            $iyzico_order_insert  = $this->model_extension_payment_iyzico->insertIyzicoOrder($iyzico_local_order);
                   
             $payment_id            = $this->db->escape($request_response->paymentId);
             $payment_field_desc    = $this->language->get('payment_field_desc');
