@@ -1,0 +1,22 @@
+{{ header }}
+<div id="error-not-found" class="container">
+  
+  <div class="row">{{ column_left }}
+    {% if column_left and column_right %}
+    {% set class = 'col-sm-6' %}
+    {% elseif column_left or column_right %}
+    {% set class = 'col-sm-9' %}
+    {% else %}
+    {% set class = 'col-sm-12' %}
+    {% endif %}
+    <div style="text-align:center;" id="content" class="{{ class }}">{{ content_top }}
+<h1 style="text-alicen:center;">{{ error_title }}</h1>
+<img src="{{error_icon}}" width="64" height="64" style="text-align:center;"/>
+      <p style="text-align:center;">{{ error_message }}</p>
+      <div class="buttons clearfix">
+        <div class="pull-right"><a href="{{ continue }}" class="btn btn-primary">{{ button_continue }}</a></div>
+      </div>
+      {{ content_bottom }}</div>
+    {{ column_right }}</div>
+</div>
+{{ footer }}
