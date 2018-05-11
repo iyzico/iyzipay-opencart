@@ -16,9 +16,9 @@ Create test account at https://sandbox-iyzipay.com
 # Installation
 ---------------
 upload folder "iyzipay-opencart.ocmod.zip" via opencart extension installer menu
-```
+
 <a href="https://dev.iyzipay.com/tr/acik-kaynak/opencart">Detailed Info</a>
-```
+
 
 # Additional Features
 ---------------------
