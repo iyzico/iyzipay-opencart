@@ -1,13 +1,24 @@
-iyzico - Opencart Payment Gateway
+# iyzico - Opencart Payment Gateway
 =============
+Create live account at https://merchant.iyzipay.com
+Create test account at https://sandbox-iyzipay.com
 
-Requirements
+# Requirements
 ------------
-* Opencart 3.0.x
-* PHP 5.6+
+* PHP 5.4 and later.
 * cURL
+* Opencart 3.x
 
-Setup
+# Installation
 ---------------
-upload "iyzipay-opencart.ocmod.zip" via opencart extension installer menu
+upload folder "iyzipay-opencart.ocmod.zip" via opencart extension installer menu
+<a href="https://dev.iyzipay.com/tr/acik-kaynak/opencart">Detailed Info</a>
+
+# Additional Features
+---------------------
+Journal Quick Checkout Compatibility
+
+# Notes
+---------------
+* Developed and Tested on vanilla OpenCart Installation
 
