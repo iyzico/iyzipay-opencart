@@ -95,13 +95,17 @@ class ControllerExtensionPaymentIyzico extends Controller {
         $iyzico->billingAddress->country          = $this->dataCheck($order_info['payment_country']);
 
         foreach ($products as $key => $product) {
-            $iyzico->basketItems[$key] = new stdClass();
+	    $price = $product['total'] * $order_info['currency_value'];
+		
+	    if($price) {
+		    $iyzico->basketItems[$key] = new stdClass();
 
-            $iyzico->basketItems[$key]->id                = $product['model'];
-            $iyzico->basketItems[$key]->price             = $this->priceParser($product['total'] * $order_info['currency_value']);
-            $iyzico->basketItems[$key]->name              = $product['name'];
-            $iyzico->basketItems[$key]->category1         = $this->model_extension_payment_iyzico->getCategoryName($product['product_id']);
-            $iyzico->basketItems[$key]->itemType          = "PHYSICAL";
+		    $iyzico->basketItems[$key]->id                = $product['model'];
+		    $iyzico->basketItems[$key]->price             = $this->priceParser($product['total'] * $order_info['currency_value']);
+		    $iyzico->basketItems[$key]->name              = $product['name'];
+		    $iyzico->basketItems[$key]->category1         = $this->model_extension_payment_iyzico->getCategoryName($product['product_id']);
+		    $iyzico->basketItems[$key]->itemType          = "PHYSICAL";
+	    }
 
         }
 
