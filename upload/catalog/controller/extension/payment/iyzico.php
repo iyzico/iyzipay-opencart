@@ -110,7 +110,7 @@ class ControllerExtensionPaymentIyzico extends Controller {
 
       $shipping = $this->shippingInfo();     
 
-      if(!empty($shipping) && $shipping['cost']) {
+      if(!empty($shipping) && $shipping['cost'] && $shipping['cost'] != '0.00') {
            
             $shippigKey = count($iyzico->basketItems);
 
