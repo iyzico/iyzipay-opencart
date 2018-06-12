@@ -6,7 +6,7 @@
 
 # Requirements
 ------------
-* PHP 5.4 and later.
+* PHP 5.6 and later.
 * cURL
 * Opencart 3.x
 
