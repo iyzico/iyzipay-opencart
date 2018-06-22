@@ -55,7 +55,7 @@ class ControllerExtensionPaymentIyzico extends Controller {
         $iyzico->currency                     = $order_info['currency_code'];
         $iyzico->basketId                     = $order_id;
         $iyzico->paymentGroup                 = "PRODUCT";
-        $iyzico->forceThreeDS                 = "1";
+        $iyzico->forceThreeDS                 = "0";
         $iyzico->callbackUrl                  = $this->url->link('extension/payment/iyzico/getcallback', '', true);
         $iyzico->cardUserKey                  = $this->model_extension_payment_iyzico->findUserCardKey($customer_id,$api_key);
         $iyzico->paymentSource                = $payment_source;
@@ -110,7 +110,7 @@ class ControllerExtensionPaymentIyzico extends Controller {
 
       $shipping = $this->shippingInfo();     
 
-      if(!empty($shipping) && $shipping['cost']) {
+      if(!empty($shipping) && $shipping['cost'] && $shipping['cost'] != '0.00') {
            
             $shippigKey = count($iyzico->basketItems);
 
