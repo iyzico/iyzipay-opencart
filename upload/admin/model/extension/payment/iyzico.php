@@ -1,6 +1,6 @@
 <?php
 class ModelExtensionPaymentIyzico extends Model {
-    private $module_version 	 = '1.0';   
+    private $module_version 	 = '1.1';   
     private $module_product_name = 'eleven';  
 
 
