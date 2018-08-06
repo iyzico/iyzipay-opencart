@@ -237,6 +237,26 @@ class ControllerExtensionPaymentIyzico extends Controller {
         $this->model_setting_event->deleteEventByCode('module_notification');
     }
 
+        protected function validate() {
+
+        if (!$this->user->hasPermission('modify', 'extension/payment/iyzico')) {
+            $this->error['warning'] = $this->language->get('error_permission');
+        }
+
+        foreach ($this->fields as $key => $field) {
+         
+            if($field['validateField'] != 'blank') {
+                
+                if (!$this->request->post[$field['name']]){
+                    $this->error[$field['validateField']] = $this->language->get($field['validateField']);      
+                }
+            }
+        
+        }
+
+        return !$this->error;
+    }
+    
     public function requestIyzico($request,$method_type,$extra_request = false) {
 
         $request_modify = array();
@@ -291,26 +311,6 @@ class ControllerExtensionPaymentIyzico extends Controller {
         return $request_modify;
     }
 
-
-    protected function validate() {
-
-        if (!$this->user->hasPermission('modify', 'extension/payment/worldpay')) {
-            $this->error['warning'] = $this->language->get('error_permission');
-        }
-
-        foreach ($this->fields as $key => $field) {
-         
-            if($field['validateField'] != 'blank') {
-                
-                if (!$this->request->post[$field['name']]){
-                    $this->error[$field['validateField']] = $this->language->get($field['validateField']);      
-                }
-            }
-        
-        }
-
-        return !$this->error;
-    }
 
 
 }
