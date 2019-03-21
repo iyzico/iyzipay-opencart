@@ -282,9 +282,10 @@ class ControllerExtensionPaymentIyzico extends Controller {
 
         $this->load->model('account/order');
         $this->load->model('catalog/product');
+	$this->load->model('checkout/order');
         $this->load->model('tool/upload');
 
-        $order_info = $this->model_account_order->getOrder($order_id);
+        $order_info = $this->model_checkout_order->getOrder($order_id);
 
         // Products
         $data['products'] = array();
