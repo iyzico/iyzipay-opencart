@@ -31,6 +31,12 @@ class ControllerExtensionPaymentIyzico extends Controller {
 		$customer_id 	                       = (int) isset($this->session->data['customer_id']) ? $this->session->data['customer_id'] : 0;
 		$user_id                               = (int) isset($this->session->data['user_id']) ? $this->session->data['user_id'] : 0;
         $order_info 	                       = $this->model_checkout_order->getOrder($order_id);
+		
+        $supported_currency = array ('USD', 'EUR', 'TRY');
+        if(!in_array(strtoupper($order_info['currency_code']), $supported_currency)) {
+            $order_info['currency_code'] = 'USD';
+        }
+
         $products                              = $this->cart->getProducts();
 
         $api_key                               = $this->config->get('payment_iyzico_api_key');
