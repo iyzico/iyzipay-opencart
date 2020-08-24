@@ -1,4 +1,4 @@
-# iyzico - Opencart Payment Gateway
+# Pay with iyzico - Opencart Payment Gateway
 ------------
 
 * Create live account at https://merchant.iyzipay.com
