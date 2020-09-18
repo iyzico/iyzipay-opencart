@@ -122,7 +122,7 @@ class ModelExtensionPaymentPaywithiyzico extends Model {
 		$form_object->paymentSource 		= $object_data->paymentSource;
 		$form_object->currency 	  			= $object_data->currency;
 		$form_object->paidPrice   			= $object_data->paidPrice;
-		$form_object->cancelUrl 			= "https://www.google.com";
+		$form_object->cancelUrl 			= $object_data->cancelUrl;
 
 		return $form_object;
 

@@ -83,7 +83,7 @@ class ControllerExtensionPaymentPaywithiyzico extends Controller {
         $paywithiyzico->basketId                     = $order_id;
         $paywithiyzico->paymentGroup                 = "PRODUCT";
         $paywithiyzico->callbackUrl                  = $this->url->link('extension/payment/paywithiyzico/getcallback', '', true);
-        $paywithiyzico->cancelUrl                  = "https://www.google.com";
+        $paywithiyzico->cancelUrl                    = $this->url->link('extension/payment/paywithiyzico/getcallback', '', true);
         $paywithiyzico->paymentSource                = $payment_source;
                         
         if ($paywithiyzico->paidPrice === 0) {
