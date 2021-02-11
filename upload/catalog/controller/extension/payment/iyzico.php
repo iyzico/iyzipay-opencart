@@ -22,6 +22,8 @@ class ControllerExtensionPaymentIyzico extends Controller {
 
 	public function getCheckoutFormToken() {
 
+        $this->checkAndSetCookieSameSite();
+
 		$this->load->model('checkout/order');
         $this->load->model('setting/setting');
         $this->load->model('extension/payment/iyzico');
@@ -501,4 +503,38 @@ class ControllerExtensionPaymentIyzico extends Controller {
         
         return $ip_address;
     }
+
+    private function setcookieSameSite($name, $value, $expire, $path, $domain, $secure, $httponly) {
+
+        if (PHP_VERSION_ID < 70300) {
+
+            setcookie($name, $value, $expire, "$path; samesite=None", $domain, $secure, $httponly);
+        }
+        else {
+            setcookie($name, $value, [
+                'expires' => $expire,
+                'path' => $path,
+                'domain' => $domain,
+                'samesite' => 'None',
+                'secure' => $secure,
+                'httponly' => $httponly
+            ]);
+
+
+        }
+    }
+
+    private function checkAndSetCookieSameSite(){
+
+        $checkCookieNames = array('PHPSESSID','OCSESSID','default','PrestaShop-','wp_woocommerce_session_');
+
+        foreach ($_COOKIE as $cookieName => $value) {
+            foreach ($checkCookieNames as $checkCookieName){
+                if (stripos($cookieName,$checkCookieName) === 0) {
+                    $this->setcookieSameSite($cookieName,$_COOKIE[$cookieName], time() + 86400, "/", $_SERVER['SERVER_NAME'],true, true);
+                }
+            }
+        }
+    }
+
 }
