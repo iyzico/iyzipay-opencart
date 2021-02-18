@@ -202,7 +202,7 @@ class ModelExtensionPaymentPaywithiyzico extends Model {
 
 	public function createFormInitializeDetailRequest($json,$authorization_data) {
 
-		$url = "https://sandbox-api.iyzipay.com";
+		$url = $this->config->get('payment_iyzico_api_url');
 		$url = $url.'/payment/iyzipos/checkoutform/auth/ecom/detail';
 
 	    return $this->curlPost($json,$authorization_data,$url);
@@ -212,7 +212,7 @@ class ModelExtensionPaymentPaywithiyzico extends Model {
 
 	public function createFormInitializeRequest($json,$authorization_data) {
 
-		$url = "https://sandbox-api.iyzipay.com";
+		$url = $this->config->get('payment_iyzico_api_url');
 		$url = $url.'/payment/pay-with-iyzico/initialize';
 
 

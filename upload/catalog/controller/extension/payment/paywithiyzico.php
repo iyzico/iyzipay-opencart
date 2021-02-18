@@ -26,7 +26,7 @@ class ControllerExtensionPaymentPaywithiyzico extends Controller {
         }
     }
 
-	public function index() {
+    public function index() {
 
 
        $cookieControl = false;
@@ -64,6 +64,7 @@ class ControllerExtensionPaymentPaywithiyzico extends Controller {
         $secret_key                            = $this->config->get('payment_iyzico_secret_key');
         $payment_source                        = "OPENCART-".$this->module_version."|".$this->module_product_name."|".$this->config->get('payment_paywithiyzico_design');
 
+
         $user_create_date                      = $this->model_extension_payment_paywithiyzico->getUserCreateDate($user_id);
 
         $this->session->data['conversation_id'] = $order_id;
@@ -83,9 +84,10 @@ class ControllerExtensionPaymentPaywithiyzico extends Controller {
         $paywithiyzico->basketId                     = $order_id;
         $paywithiyzico->paymentGroup                 = "PRODUCT";
         $paywithiyzico->callbackUrl                  = $this->url->link('extension/payment/paywithiyzico/getcallback', '', true);
-        $paywithiyzico->cancelUrl                    = $this->url->link('extension/payment/paywithiyzico/getcallback', '', true);
+        $paywithiyzico->cancelUrl                    = $this->config->get('config_url');
         $paywithiyzico->paymentSource                = $payment_source;
                         
+
         if ($paywithiyzico->paidPrice === 0) {
             return false;
         }
@@ -162,8 +164,8 @@ class ControllerExtensionPaymentPaywithiyzico extends Controller {
 
         $data['pwi_redirect'] = $form_response->payWithIyzicoPageUrl;
         
-		return $this->load->view('extension/payment/paywithiyzico_form',$data);
-	}
+        return $this->load->view('extension/payment/paywithiyzico_form',$data);
+    }
 
 
     public function getCallBack()  {
