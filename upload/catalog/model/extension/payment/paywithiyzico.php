@@ -1,371 +1,363 @@
 <?php
 
 class ModelExtensionPaymentPaywithiyzico extends Model {
-	
-	public function getMethod($address, $total) {
-		
-		$payment_paywithiyzico_geo_zone_id = $this->config->get('payment_paywithiyzico_geo_zone_id');
-		$payment_paywithiyzico_geo_zone_id = $this->db->escape($payment_paywithiyzico_geo_zone_id);
-		$address_country_id 		= $this->db->escape($address['country_id']);
-		$address_zone_id 			= $this->db->escape($address['zone_id']);
 
-		$query = $this->db->query("SELECT * FROM `" . DB_PREFIX . "zone_to_geo_zone` WHERE `geo_zone_id` = '" . $payment_paywithiyzico_geo_zone_id . "' AND `country_id` = '" . $address_country_id . "' AND (`zone_id` = '" . $address_zone_id . "' OR `zone_id` = '0')");
+    public function getMethod($address, $total) {
 
-		if ($this->config->get('payment_paywithiyzico_total') > $total) {
-			$status = false;
-		} elseif (!$this->config->get('payment_paywithiyzico_geo_zone_id')) {
-			$status = true;
-		} elseif ($query->num_rows) {
-			$status = true;
-		} else {
-			$status = false;
-		}
+        $payment_paywithiyzico_geo_zone_id = $this->config->get('payment_paywithiyzico_geo_zone_id');
+        $payment_paywithiyzico_geo_zone_id = $this->db->escape($payment_paywithiyzico_geo_zone_id);
+        $address_country_id 		= $this->db->escape($address['country_id']);
+        $address_zone_id 			= $this->db->escape($address['zone_id']);
 
-		$method_data = array();
+        $query = $this->db->query("SELECT * FROM `" . DB_PREFIX . "zone_to_geo_zone` WHERE `geo_zone_id` = '" . $payment_paywithiyzico_geo_zone_id . "' AND `country_id` = '" . $address_country_id . "' AND (`zone_id` = '" . $address_zone_id . "' OR `zone_id` = '0')");
 
-		$this->load->language('extension/payment/paywithiyzico');
-		$languageCode = $this->language->get('code');
+        if ($this->config->get('payment_paywithiyzico_total') > $total) {
+            $status = false;
+        } elseif (!$this->config->get('payment_paywithiyzico_geo_zone_id')) {
+            $status = true;
+        } elseif ($query->num_rows) {
+            $status = true;
+        } else {
+            $status = false;
+        }
 
-		if($languageCode == 'tr') {
-			$languageText = 'iyzico ile Öde';
-		} else {
-			$languageText = 'Pay with iyzico';
-		}
-		
+        $method_data = array();
 
-		if ($status) {
-			$method_data = array(
-				'code'       => 'paywithiyzico',
-				'title'      => $languageText,
-				'terms'      => '',
-				'sort_order' => $this->config->get('payment_paywithiyzico_sort_order')
-			);
-		}
+        $this->load->language('extension/payment/paywithiyzico');
 
-		return $method_data;
-	}
+        if ($status) {
+            $method_data = array(
+                'code'       => 'paywithiyzico',
+                'title' => $this->language->get('pwi_img_title'). " " .$this->language->get('pwi_title'),
+                'terms'      => '',
+                'sort_order' => $this->config->get('payment_paywithiyzico_sort_order')
+            );
+        }
 
-	private function paywithiyzicoMultipLangTitle($title) {
+        return $method_data;
+    }
 
-		$this->load->language('extension/payment/paywithiyzico');
+    private function paywithiyzicoMultipLangTitle($title) {
 
-		if($title) {
+        $this->load->language('extension/payment/paywithiyzico');
 
-			$parser = explode('|',$title);
-			
-			if(is_array($parser) && count($parser)) {
+        if($title) {
 
-				foreach ($parser as $key => $parse) {
-					$result = explode('=',$parse);
+            $parser = explode('|',$title);
 
-					if($this->language->get('code') == $result[0]) {
-						$new_title = $result[1];
-						break;
-					}
-				}
-				
-			}
+            if(is_array($parser) && count($parser)) {
 
-		}
-		if(!isset($new_title)) {
-			$new_title = $this->language->get('paywithiyzico');
-		}
+                foreach ($parser as $key => $parse) {
+                    $result = explode('=',$parse);
 
-      	return $new_title;
+                    if($this->language->get('code') == $result[0]) {
+                        $new_title = $result[1];
+                        break;
+                    }
+                }
 
-	}
+            }
 
-	public function authorizationGenerate($pki,$api_key,$secret_key,$rand_value) {
+        }
+        if(!isset($new_title)) {
+            $new_title = $this->language->get('paywithiyzico');
+        }
 
-		$hash_value = $api_key.$rand_value.$secret_key.$pki;
-		$hash 		= base64_encode(sha1($hash_value,true));
-		
-		$authorization 	= 'IYZWS '.$api_key.':'.$hash;
-		
-		$authorization_data = array(
-			'authorization' => $authorization,
-			'rand_value' 	=> $rand_value
-		);
-		
-		return $authorization_data;
+        return $new_title;
 
-	}
+    }
+
+    public function authorizationGenerate($pki,$api_key,$secret_key,$rand_value) {
+
+        $hash_value = $api_key.$rand_value.$secret_key.$pki;
+        $hash 		= base64_encode(sha1($hash_value,true));
+
+        $authorization 	= 'IYZWS '.$api_key.':'.$hash;
+
+        $authorization_data = array(
+            'authorization' => $authorization,
+            'rand_value' 	=> $rand_value
+        );
+
+        return $authorization_data;
+
+    }
 
 
-	public function createFormInitializObjectSort($object_data) {
+    public function createFormInitializObjectSort($object_data) {
 
-		$form_object = new stdClass();
+        $form_object = new stdClass();
 
-		$form_object->locale 						= $object_data->locale;
-		$form_object->conversationId 				= $object_data->conversationId;
-		$form_object->price 						= $object_data->price;
-		$form_object->basketId 						= $object_data->basketId;
-		$form_object->paymentGroup 					= $object_data->paymentGroup;
+        $form_object->locale 						= $object_data->locale;
+        $form_object->conversationId 				= $object_data->conversationId;
+        $form_object->price 						= $object_data->price;
+        $form_object->basketId 						= $object_data->basketId;
+        $form_object->paymentGroup 					= $object_data->paymentGroup;
 
-		$form_object->buyer = new stdClass();
-		$form_object->buyer = $object_data->buyer;
+        $form_object->buyer = new stdClass();
+        $form_object->buyer = $object_data->buyer;
 
-		$form_object->shippingAddress = new stdClass();
-		$form_object->shippingAddress = $object_data->shippingAddress;
+        $form_object->shippingAddress = new stdClass();
+        $form_object->shippingAddress = $object_data->shippingAddress;
 
-		$form_object->billingAddress = new stdClass();
-		$form_object->billingAddress = $object_data->billingAddress;
+        $form_object->billingAddress = new stdClass();
+        $form_object->billingAddress = $object_data->billingAddress;
 
-		foreach ($object_data->basketItems as $key => $item) {
-			
-			$form_object->basketItems[$key] = new stdClass();
-			$form_object->basketItems[$key] = $item;
-			
-		}
+        foreach ($object_data->basketItems as $key => $item) {
 
-		$form_object->callbackUrl 			= $object_data->callbackUrl;
-		$form_object->paymentSource 		= $object_data->paymentSource;
-		$form_object->currency 	  			= $object_data->currency;
-		$form_object->paidPrice   			= $object_data->paidPrice;
-		$form_object->cancelUrl 			= $object_data->cancelUrl;
+            $form_object->basketItems[$key] = new stdClass();
+            $form_object->basketItems[$key] = $item;
 
-		return $form_object;
+        }
 
-	}
+        $form_object->callbackUrl 			= $object_data->callbackUrl;
+        $form_object->paymentSource 		= $object_data->paymentSource;
+        $form_object->currency 	  			= $object_data->currency;
+        $form_object->paidPrice   			= $object_data->paidPrice;
+        $form_object->cancelUrl 			= $object_data->cancelUrl;
 
-	public function pkiStringGenerate($object_data) {
-		
-		$pki_value = "[";
-		foreach ($object_data as $key => $data) {
-			if(is_object($data)) {
-				$name = var_export($key, true);
-				$name = str_replace("'", "", $name); 
-				$pki_value .= $name."=[";
-				$end_key = count(get_object_vars($data));
-				$count 	 = 0;
-				foreach ($data as $key => $value) {
-					$count++;
-					$name = var_export($key, true);
-					$name = str_replace("'", "", $name); 
-					$pki_value .= $name."="."".$value;
-					if($end_key != $count)
-						$pki_value .= ",";
-				}
-				$pki_value .= "]";
-			} else if(is_array($data)) {
-				$name = var_export($key, true);
-				$name = str_replace("'", "", $name); 
-				$pki_value .= $name."=[";
-				$end_key = count($data);
-				$count 	 = 0;
-				foreach ($data as $key => $result) {
-					$count++;
-					$pki_value .= "[";
-					
-					foreach ($result as $key => $item) {
-						$name = var_export($key, true);
-						$name = str_replace("'", "", $name); 
-					
-						$pki_value .= $name."="."".$item;
-						if(end($result) != $item) {
-							$pki_value .= ",";
-						}
-						if(end($result) == $item) {
-							if($end_key != $count) {
-								$pki_value .= "], ";
-							
-							} else {
-								$pki_value .= "]";
-							}
-						}
-					}
-				}
-				if(end($data) == $result) 
-					$pki_value .= "]";
-				
-			} else {
-				$name = var_export($key, true);
-				$name = str_replace("'", "", $name); 
-				  
-				$pki_value .= $name."="."".$data."";
-			}
-			if(end($object_data) != $data)
-				$pki_value .= ",";
-		}
-		$pki_value .= "]";
-		return $pki_value;
-	}
+        return $form_object;
 
+    }
 
-	public function hashGenerate($pki,$api_key,$secret_key,$random_value) {
+    public function pkiStringGenerate($object_data) {
 
-		$hash = $api_key . $random_value . $secret_key . $pki;
+        $pki_value = "[";
+        foreach ($object_data as $key => $data) {
+            if(is_object($data)) {
+                $name = var_export($key, true);
+                $name = str_replace("'", "", $name);
+                $pki_value .= $name."=[";
+                $end_key = count(get_object_vars($data));
+                $count 	 = 0;
+                foreach ($data as $key => $value) {
+                    $count++;
+                    $name = var_export($key, true);
+                    $name = str_replace("'", "", $name);
+                    $pki_value .= $name."="."".$value;
+                    if($end_key != $count)
+                        $pki_value .= ",";
+                }
+                $pki_value .= "]";
+            } else if(is_array($data)) {
+                $name = var_export($key, true);
+                $name = str_replace("'", "", $name);
+                $pki_value .= $name."=[";
+                $end_key = count($data);
+                $count 	 = 0;
+                foreach ($data as $key => $result) {
+                    $count++;
+                    $pki_value .= "[";
 
-		return base64_encode(sha1($hash, true));
+                    foreach ($result as $key => $item) {
+                        $name = var_export($key, true);
+                        $name = str_replace("'", "", $name);
 
-	}
+                        $pki_value .= $name."="."".$item;
+                        if(end($result) != $item) {
+                            $pki_value .= ",";
+                        }
+                        if(end($result) == $item) {
+                            if($end_key != $count) {
+                                $pki_value .= "], ";
 
-	public function createFormInitializeDetailRequest($json,$authorization_data) {
+                            } else {
+                                $pki_value .= "]";
+                            }
+                        }
+                    }
+                }
+                if(end($data) == $result)
+                    $pki_value .= "]";
 
-		$url = $this->config->get('payment_iyzico_api_url');
-		$url = $url.'/payment/iyzipos/checkoutform/auth/ecom/detail';
+            } else {
+                $name = var_export($key, true);
+                $name = str_replace("'", "", $name);
 
-	    return $this->curlPost($json,$authorization_data,$url);
-	 
-	}
+                $pki_value .= $name."="."".$data."";
+            }
+            if(end($object_data) != $data)
+                $pki_value .= ",";
+        }
+        $pki_value .= "]";
+        return $pki_value;
+    }
 
 
-	public function createFormInitializeRequest($json,$authorization_data) {
+    public function hashGenerate($pki,$api_key,$secret_key,$random_value) {
 
-		$url = $this->config->get('payment_iyzico_api_url');
-		$url = $url.'/payment/pay-with-iyzico/initialize';
+        $hash = $api_key . $random_value . $secret_key . $pki;
+
+        return base64_encode(sha1($hash, true));
+
+    }
+
+    public function createFormInitializeDetailRequest($json,$authorization_data) {
+
+        $url = $this->config->get('payment_iyzico_api_url');
+        $url = $url.'/payment/iyzipos/checkoutform/auth/ecom/detail';
+
+        return $this->curlPost($json,$authorization_data,$url);
+
+    }
 
 
-	    return $this->curlPost($json,$authorization_data,$url);
-	}
+    public function createFormInitializeRequest($json,$authorization_data) {
+
+        $url = $this->config->get('payment_iyzico_api_url');
+        $url = $url.'/payment/pay-with-iyzico/initialize';
 
 
-	public function curlPost($json,$authorization_data,$url) {
+        return $this->curlPost($json,$authorization_data,$url);
+    }
 
 
-		$curl = curl_init();
-		curl_setopt($curl, CURLOPT_URL, $url);
-		$content_length = 0;
-		if ($json) {
-		    curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'POST');
-		    curl_setopt($curl, CURLOPT_POSTFIELDS, $json);
-		}
-		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 0);
-		curl_setopt($curl, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_0);
-		curl_setopt($curl, CURLOPT_TIMEOUT, 150);
-		
-		curl_setopt(        
-		    $curl, CURLOPT_HTTPHEADER, array(
-		        "Authorization: " .$authorization_data['authorization'],
-		        "x-iyzi-rnd:".$authorization_data['rand_value'], 
-		        "Content-Type: application/json",
-		    )
-		);
+    public function curlPost($json,$authorization_data,$url) {
 
-		$result = json_decode(curl_exec($curl));
-		curl_close($curl);
 
-		
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL, $url);
+        $content_length = 0;
+        if ($json) {
+            curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'POST');
+            curl_setopt($curl, CURLOPT_POSTFIELDS, $json);
+        }
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 0);
+        curl_setopt($curl, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_0);
+        curl_setopt($curl, CURLOPT_TIMEOUT, 150);
 
-		return $result;
-	}
+        curl_setopt(
+            $curl, CURLOPT_HTTPHEADER, array(
+                "Authorization: " .$authorization_data['authorization'],
+                "x-iyzi-rnd:".$authorization_data['rand_value'],
+                "Content-Type: application/json",
+            )
+        );
 
-	public function insertCardUserKey($customer_id,$card_user_key,$api_key) {
+        $result = json_decode(curl_exec($curl));
+        curl_close($curl);
 
-		$insertCard = $this->db->query("INSERT INTO `" . DB_PREFIX . "paywithiyzico_card` SET 
+
+
+        return $result;
+    }
+
+    public function insertCardUserKey($customer_id,$card_user_key,$api_key) {
+
+        $insertCard = $this->db->query("INSERT INTO `" . DB_PREFIX . "paywithiyzico_card` SET 
 			`customer_id` 	= '" . $this->db->escape($customer_id) . "',
 			`card_user_key` = '" . $this->db->escape($card_user_key) . "',
 			`api_key` 		= '" . $this->db->escape($api_key) . "'");
 
-		return $insertCard;
-	}
+        return $insertCard;
+    }
 
-	public function findUserCardKey($customer_id,$api_key) {
+    public function findUserCardKey($customer_id,$api_key) {
 
-		$customer_id = $this->db->escape($customer_id);
-		$api_key 	 = $this->db->escape($api_key);
-		
-		$card_user_key = (object) $this->db->query("SELECT card_user_key FROM " . DB_PREFIX . "paywithiyzico_card WHERE customer_id = '" . $customer_id ."' and api_key = '".$api_key."' ORDER BY paywithiyzico_card_id DESC");
+        $customer_id = $this->db->escape($customer_id);
+        $api_key 	 = $this->db->escape($api_key);
 
-		if(count($card_user_key->rows)) {
+        $card_user_key = (object) $this->db->query("SELECT card_user_key FROM " . DB_PREFIX . "paywithiyzico_card WHERE customer_id = '" . $customer_id ."' and api_key = '".$api_key."' ORDER BY paywithiyzico_card_id DESC");
 
-			return $card_user_key->rows[0]['card_user_key'];
-		} 
-			
-			return '';
-	}
+        if(count($card_user_key->rows)) {
 
-	public function insertIyzicoOrder($order) {
+            return $card_user_key->rows[0]['card_user_key'];
+        }
 
-		$insertOrder = $this->db->query("INSERT INTO `" . DB_PREFIX . "paywithiyzico_order` SET 
+        return '';
+    }
+
+    public function insertIyzicoOrder($order) {
+
+        $insertOrder = $this->db->query("INSERT INTO `" . DB_PREFIX . "paywithiyzico_order` SET 
 			`payment_id` = '" . $this->db->escape($order->payment_id) . "',
 			`order_id` = '" . $this->db->escape($order->order_id) . "', 
 			`total_amount` = '" . $this->db->escape($order->total_amount) . "',
 			`status` = '" . $this->db->escape($order->status) . "'");
 
-		return $insertOrder;
-	}
+        return $insertOrder;
+    }
 
-	public function orderUpdateByInstallement($order_id,$paidPrice) {
+    public function orderUpdateByInstallement($order_id,$paidPrice) {
 
-		$order_id 		 = $this->db->escape($order_id);
+        $order_id 		 = $this->db->escape($order_id);
 
-		$order_info 	 = $this->model_checkout_order->getOrder($order_id);
+        $order_info 	 = $this->model_checkout_order->getOrder($order_id);
 
-		$order_total = (array) $this->db->query("SELECT * FROM " . DB_PREFIX . "order_total WHERE order_id = '" . $order_id . "' AND code = 'total' ");
+        $order_total = (array) $this->db->query("SELECT * FROM " . DB_PREFIX . "order_total WHERE order_id = '" . $order_id . "' AND code = 'total' ");
 
-		$last_sort_value = $order_total['row']['sort_order'] - 1;
-		$last_sort_value = $this->db->escape($last_sort_value);
+        $last_sort_value = $order_total['row']['sort_order'] - 1;
+        $last_sort_value = $this->db->escape($last_sort_value);
 
-		$exchange_rate = $this->currency->getValue($order_info['currency_code']);
+        $exchange_rate = $this->currency->getValue($order_info['currency_code']);
 
-		$new_amount = str_replace(',', '', $paidPrice);
-		$old_amount = str_replace(',', '', $order_info['total'] * $order_info['currency_value']);
-		$installment_fee_variation = (float) ($new_amount - $old_amount) / $exchange_rate;
-		$installment_fee_variation = $this->db->escape($installment_fee_variation);
+        $new_amount = str_replace(',', '', $paidPrice);
+        $old_amount = str_replace(',', '', $order_info['total'] * $order_info['currency_value']);
+        $installment_fee_variation = (float) ($new_amount - $old_amount) / $exchange_rate;
+        $installment_fee_variation = $this->db->escape($installment_fee_variation);
 
-		$this->db->query("INSERT INTO " . DB_PREFIX . "order_total SET order_id = '" .
-		    $order_id . "',code = 'paywithiyzico_fee',  title = 'Taksit Ücreti', `value` = '" .
-		     $installment_fee_variation . "', sort_order = '" . $last_sort_value . "'");
-
-
-		$order_total_data = (array) $this->db->query("SELECT * FROM " . DB_PREFIX . "order_total WHERE order_id = '" . $order_id . "' AND code != 'total' ");
-
-		$calculate_total = 0;
-		
-		foreach ($order_total_data['rows'] as $row) {
-		        $calculate_total += $row['value'];
-		}
-
-		$calculate_total = $this->db->escape($calculate_total);
-
-		$this->db->query("UPDATE " . DB_PREFIX . "order_total SET  `value` = '" . $calculate_total . "' WHERE order_id = '$order_id' AND code = 'total' ");
-
-		$this->db->query("UPDATE `" . DB_PREFIX . "order` SET total = '" . $calculate_total . "' WHERE order_id = '" . $order_id . "'");
-	
-	}
-
-	public function getCategoryName($product_id) {
-
-		$product_id = $this->db->escape($product_id);
-
-		$query = $this->db->query("SELECT category_id FROM " . DB_PREFIX . "product_to_category WHERE product_id = '" . $product_id . "' LIMIT 1");
-
-	
-		if(count($query->rows)) {
-
-			$category_id = $this->db->escape($query->rows[0]['category_id']);
-
-			$category 	 = $this->db->query("SELECT name FROM " . DB_PREFIX . "category_description WHERE category_id = '" . $category_id . "' LIMIT 1");
-
-			if($category->rows[0]['name']) {
-				$category_name = $category->rows[0]['name'];
-			} else {
-				$category_name = 'NO CATEGORIES';
-			}
-
-		} else {
-			$category_name = 'NO CATEGORIES';
-		}
-		
-		return $category_name;
-	}
+        $this->db->query("INSERT INTO " . DB_PREFIX . "order_total SET order_id = '" .
+            $order_id . "',code = 'paywithiyzico_fee',  title = 'Taksit Ücreti', `value` = '" .
+            $installment_fee_variation . "', sort_order = '" . $last_sort_value . "'");
 
 
-	public function getUserCreateDate($user_id) {
+        $order_total_data = (array) $this->db->query("SELECT * FROM " . DB_PREFIX . "order_total WHERE order_id = '" . $order_id . "' AND code != 'total' ");
 
-		$user_id = $this->db->escape($user_id);
+        $calculate_total = 0;
 
-		$user_create_date = (object) $this->db->query("SELECT date_added FROM " . DB_PREFIX . "user WHERE user_id = '" . $user_id ."'");
+        foreach ($order_total_data['rows'] as $row) {
+            $calculate_total += $row['value'];
+        }
 
-		if(count($user_create_date->rows)) {
+        $calculate_total = $this->db->escape($calculate_total);
 
-			return $user_create_date->rows[0]['date_added'];
-		} 
-			
-			return date('Y-m-d H:i:s');
-	}
+        $this->db->query("UPDATE " . DB_PREFIX . "order_total SET  `value` = '" . $calculate_total . "' WHERE order_id = '$order_id' AND code = 'total' ");
+
+        $this->db->query("UPDATE `" . DB_PREFIX . "order` SET total = '" . $calculate_total . "' WHERE order_id = '" . $order_id . "'");
+
+    }
+
+    public function getCategoryName($product_id) {
+
+        $product_id = $this->db->escape($product_id);
+
+        $query = $this->db->query("SELECT category_id FROM " . DB_PREFIX . "product_to_category WHERE product_id = '" . $product_id . "' LIMIT 1");
+
+
+        if(count($query->rows)) {
+
+            $category_id = $this->db->escape($query->rows[0]['category_id']);
+
+            $category 	 = $this->db->query("SELECT name FROM " . DB_PREFIX . "category_description WHERE category_id = '" . $category_id . "' LIMIT 1");
+
+            if($category->rows[0]['name']) {
+                $category_name = $category->rows[0]['name'];
+            } else {
+                $category_name = 'NO CATEGORIES';
+            }
+
+        } else {
+            $category_name = 'NO CATEGORIES';
+        }
+
+        return $category_name;
+    }
+
+
+    public function getUserCreateDate($user_id) {
+
+        $user_id = $this->db->escape($user_id);
+
+        $user_create_date = (object) $this->db->query("SELECT date_added FROM " . DB_PREFIX . "user WHERE user_id = '" . $user_id ."'");
+
+        if(count($user_create_date->rows)) {
+
+            return $user_create_date->rows[0]['date_added'];
+        }
+
+        return date('Y-m-d H:i:s');
+    }
 
 
 

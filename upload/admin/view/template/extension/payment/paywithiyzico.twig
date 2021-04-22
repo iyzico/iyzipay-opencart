@@ -10,73 +10,77 @@
             <div class="pull-right">
                 <button type="submit" form="form-payment" data-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary"><i class="fa fa-save"></i></button>
                 <a href="{{ cancel }}" data-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-default"><i class="fa fa-reply"></i></a></div>
-                <h1><i class="fa fa-credit-card"></i> {{ heading_title }}</h1>
-            </div>
+            <h1><i class="fa fa-credit-card"></i> {{ heading_title }}</h1>
+        </div>
     </div>
     <div class="container-fluid">
-    <div class="form-group required">
-        <div class="panel-body">
-        <form action="{{ action }}" method="post" enctype="multipart/form-data" id="form-payment" onsubmit="return getApiValid()" class="form-horizontal">
-            <div class="form-group">
-                <label class="col-sm-2 control-label" for="test">{{ extension_status }}</label>
-                <div class="col-sm-10">
-                    <select class="form-control" name="payment_paywithiyzico_status">
-                        <option value="">{{ general_select }}</option>
-                        {% if payment_paywithiyzico_status == 1 %}
-                            <option value="1" selected="selected">{{ text_enabled }}</option>
-                            <option value="0">{{text_disabled}}</option>
-                        {% else %}
-                            <option value="1" >{{ text_enabled }}</option>
-                            <option value="0" selected="selected">{{text_disabled}}</option>
-                        {% endif %}
-                    </select>
+        <div class="form-group required">
+            <div class="panel-body">
+                <div>
+                    <img style="width: 10%" src="view/image/payment/paywithiyzico_logo.png" alt="paywithiyzico" title="paywithiyzico"/>
+                    <span><strong>v:</strong>{{ version }}</span>
                 </div>
-    </div>
-    <div class="form-group required">
-        <label class="col-sm-2 control-label" for="test">{{order_status}}
-            <span data-toggle="tooltip" title="{{ order_status_tooltip }}"></span>
-        </label>
-        <div class="col-sm-10">
-            <select class="form-control" name="payment_paywithiyzico_order_status">
-                {% for order_status in order_statuses %}
-                    {% if order_status.order_status_id == payment_paywithiyzico_order_status %}  
-                        <option value="{{ order_status.order_status_id }}" selected="selected">{{ order_status.name }}</option>
-                    {% else %}
-                        {% if payment_paywithiyzico_order_status == false and order_status.order_status_id == 5  %}  
-                            <option value="{{ order_status.order_status_id }}" selected="selected">{{ order_status.name }}</option>
-                        {% endif %}
-                        <option value="{{ order_status.order_status_id }}" >{{ order_status.name }}</option>
-                    {% endif %}
-                {% endfor %}
-            </select>
-            {% if error_order_status %}
-                <div class="text-danger">{{ error_order_status }}</div>
-            {% endif %}
-        </div>
-    </div>
-    <div class="form-group required">
-        <label class="col-sm-2 control-label" for="test">{{cancel_order_status}}
-            <span data-toggle="tooltip" title="{{ cancel_order_status_tooltip }}"></span>
-        </label>
-        <div class="col-sm-10">
-            <select class="form-control" name="payment_paywithiyzico_order_cancel_status">
-                {% for order_status in order_statuses %}
-                    {% if order_status.order_status_id == payment_paywithpaywithiyzico_order_cancel_status %}  
-                        <option value="{{ order_status.order_status_id }}" selected="selected">{{ order_status.name }}</option>
-                    {% else %}
-                        {% if payment_paywithiyzico_order_status == false and order_status.order_status_id == 7  %}  
-                            <option value="{{ order_status.order_status_id }}" selected="selected">{{ order_status.name }}</option>
-                        {% endif %}
-                        <option value="{{ order_status.order_status_id }}">{{ order_status.name }}</option>
-                    {% endif %}
-                {% endfor %}
-            </select>
-            {% if error_cancel_order_status %}
-                <div class="text-danger">{{ error_cancel_order_status }}</div>
-            {% endif %}
-        </div>
-    </div>
-            </form>
+                <form action="{{ action }}" method="post" enctype="multipart/form-data" id="form-payment" onsubmit="return getApiValid()" class="form-horizontal">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="test">{{ extension_status }}</label>
+                        <div class="col-sm-10">
+                            <select class="form-control" name="payment_paywithiyzico_status">
+                                <option value="">{{ general_select }}</option>
+                                {% if payment_paywithiyzico_status == 1 %}
+                                    <option value="1" selected="selected">{{ text_enabled }}</option>
+                                    <option value="0">{{text_disabled}}</option>
+                                {% else %}
+                                    <option value="1" >{{ text_enabled }}</option>
+                                    <option value="0" selected="selected">{{text_disabled}}</option>
+                                {% endif %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group required">
+                        <label class="col-sm-2 control-label" for="test">{{order_status}}
+                            <span data-toggle="tooltip" title="{{ order_status_tooltip }}"></span>
+                        </label>
+                        <div class="col-sm-10">
+                            <select class="form-control" name="payment_paywithiyzico_order_status">
+                                {% for order_status in order_statuses %}
+                                    {% if order_status.order_status_id == payment_paywithiyzico_order_status %}
+                                        <option value="{{ order_status.order_status_id }}" selected="selected">{{ order_status.name }}</option>
+                                    {% else %}
+                                        {% if payment_paywithiyzico_order_status == false and order_status.order_status_id == 5  %}
+                                            <option value="{{ order_status.order_status_id }}" selected="selected">{{ order_status.name }}</option>
+                                        {% endif %}
+                                        <option value="{{ order_status.order_status_id }}" >{{ order_status.name }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                            {% if error_order_status %}
+                                <div class="text-danger">{{ error_order_status }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="form-group required">
+                        <label class="col-sm-2 control-label" for="test">{{cancel_order_status}}
+                            <span data-toggle="tooltip" title="{{ cancel_order_status_tooltip }}"></span>
+                        </label>
+                        <div class="col-sm-10">
+                            <select class="form-control" name="payment_paywithiyzico_order_cancel_status">
+                                {% for order_status in order_statuses %}
+                                    {% if order_status.order_status_id == payment_paywithpaywithiyzico_order_cancel_status %}
+                                        <option value="{{ order_status.order_status_id }}" selected="selected">{{ order_status.name }}</option>
+                                    {% else %}
+                                        {% if payment_paywithiyzico_order_status == false and order_status.order_status_id == 7  %}
+                                            <option value="{{ order_status.order_status_id }}" selected="selected">{{ order_status.name }}</option>
+                                        {% endif %}
+                                        <option value="{{ order_status.order_status_id }}">{{ order_status.name }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                            {% if error_cancel_order_status %}
+                                <div class="text-danger">{{ error_cancel_order_status }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

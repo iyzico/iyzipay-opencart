@@ -2,7 +2,7 @@
 
 // Heading
 $_['heading_title']         			= 'Pay with iyzico';
-$_['text_paywithiyzico'] 					= '<a href="http://www.paywithiyzico.com/" target="_blank"><img src="view/image/payment/paywithiyzico_logo.png" alt="paywithiyzico" title="paywithiyzico" /></a>';
+$_['text_paywithiyzico'] 				= '<a href="https://www.iyzico.com/isim-icin/iyzico-ile-ode" target="_blank"><img src="view/image/payment/paywithiyzico_logo.png" alt="paywithiyzico" title="paywithiyzico" /></a>';
 $_['general_select']        			= 'Select';
 $_['live']                  			= 'Live';
 $_['sandbox']               			= 'Sandbox / Test';
