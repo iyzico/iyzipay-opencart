@@ -5,4 +5,3 @@ $_['pwi_img_title'] 			= '<img style="width: 30%" src="admin/view/image/payment/
 $_['payment_failed'] 		 	= 'Payment Failed';
 $_['payment_field_desc'] 	 	= 'Payment ID: ';
 $_['installement_field_desc'] 	= ' Installement ';
-
