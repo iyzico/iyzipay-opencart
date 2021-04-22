@@ -1,9 +1,8 @@
-<?php 
+<?php
 
 class ControllerExtensionPaymentPaywithiyzico extends Controller {
-
-    private $module_version      = VERSION;   
-    private $module_product_name = 'eleven-1.0';  
+    private $module_version      = '1.2';
+    private $module_product_name = 'eleven-1.2';
 
 
     private function setcookieSameSite($name, $value, $expire, $path, $domain, $secure, $httponly) {
@@ -13,7 +12,7 @@ class ControllerExtensionPaymentPaywithiyzico extends Controller {
             setcookie($name, $value, $expire, "$path; samesite=None", $domain, $secure, $httponly);
         }
         else {
-                setcookie($name, $value, [
+            setcookie($name, $value, [
                 'expires' => $expire,
                 'path' => $path,
                 'domain' => $domain,
@@ -22,14 +21,14 @@ class ControllerExtensionPaymentPaywithiyzico extends Controller {
                 'httponly' => $httponly,
             ]);
 
-      
+
         }
     }
 
     public function index() {
 
 
-       $cookieControl = false;
+        $cookieControl = false;
 
         if(isset($_COOKIE['PHPSESSID'])) {
             $sessionKey = "PHPSESSID";
@@ -68,8 +67,8 @@ class ControllerExtensionPaymentPaywithiyzico extends Controller {
         $user_create_date                      = $this->model_extension_payment_paywithiyzico->getUserCreateDate($user_id);
 
         $this->session->data['conversation_id'] = $order_id;
- 
-      
+
+
         $order_info['payment_address']         = $order_info['payment_address_1']." ".$order_info['payment_address_2'];
         $order_info['shipping_address']        = $order_info['shipping_address_1']." ".$order_info['shipping_address_2'];
 
@@ -86,26 +85,26 @@ class ControllerExtensionPaymentPaywithiyzico extends Controller {
         $paywithiyzico->callbackUrl                  = $this->url->link('extension/payment/paywithiyzico/getcallback', '', true);
         $paywithiyzico->cancelUrl                    = $this->config->get('config_url');
         $paywithiyzico->paymentSource                = $payment_source;
-                        
+
 
         if ($paywithiyzico->paidPrice === 0) {
             return false;
         }
-        
+
         $paywithiyzico->buyer = new stdClass;
         $paywithiyzico->buyer->id                          = $order_info['customer_id'];
         $paywithiyzico->buyer->name                        = $this->dataCheck($order_info['firstname']);
         $paywithiyzico->buyer->surname                     = $this->dataCheck($order_info['lastname']);
-        $paywithiyzico->buyer->identityNumber              = '11111111111';   
-        $paywithiyzico->buyer->email                       = $this->dataCheck($order_info['email']);  
-        $paywithiyzico->buyer->gsmNumber                   = $this->dataCheck($order_info['telephone']);   
+        $paywithiyzico->buyer->identityNumber              = '11111111111';
+        $paywithiyzico->buyer->email                       = $this->dataCheck($order_info['email']);
+        $paywithiyzico->buyer->gsmNumber                   = $this->dataCheck($order_info['telephone']);
         $paywithiyzico->buyer->registrationDate            = $user_create_date;
         $paywithiyzico->buyer->lastLoginDate               = date('Y-m-d H:i:s');
-        $paywithiyzico->buyer->registrationAddress         = $this->dataCheck($order_info['payment_address']);    
-        $paywithiyzico->buyer->city                        = $this->dataCheck($order_info['payment_zone']);   
-        $paywithiyzico->buyer->country                     = $this->dataCheck($order_info['payment_country']);    
-        $paywithiyzico->buyer->zipCode                     = $this->dataCheck($order_info['payment_postcode']);   
-        $paywithiyzico->buyer->ip                          = $this->dataCheck($this->getIpAdress());   
+        $paywithiyzico->buyer->registrationAddress         = $this->dataCheck($order_info['payment_address']);
+        $paywithiyzico->buyer->city                        = $this->dataCheck($order_info['payment_zone']);
+        $paywithiyzico->buyer->country                     = $this->dataCheck($order_info['payment_country']);
+        $paywithiyzico->buyer->zipCode                     = $this->dataCheck($order_info['payment_postcode']);
+        $paywithiyzico->buyer->ip                          = $this->dataCheck($this->getIpAdress());
 
         $paywithiyzico->shippingAddress = new stdClass;
         $paywithiyzico->shippingAddress->address          = $this->dataCheck($order_info['shipping_address']);
@@ -123,7 +122,7 @@ class ControllerExtensionPaymentPaywithiyzico extends Controller {
         $paywithiyzico->billingAddress->country          = $this->dataCheck($order_info['payment_country']);
 
         foreach ($products as $key => $product) {
-        $price = $product['total'] * $order_info['currency_value'];
+            $price = $product['total'] * $order_info['currency_value'];
 
             if($price) {
                 $paywithiyzico->basketItems[$key] = new stdClass();
@@ -136,10 +135,10 @@ class ControllerExtensionPaymentPaywithiyzico extends Controller {
             }
         }
 
-      $shipping = $this->shippingInfo();     
+        $shipping = $this->shippingInfo();
 
-      if(!empty($shipping) && $shipping['cost'] && $shipping['cost'] != '0.00') {
-           
+        if(!empty($shipping) && $shipping['cost'] && $shipping['cost'] != '0.00') {
+
             $shippigKey = count($paywithiyzico->basketItems);
 
             $paywithiyzico->basketItems[$shippigKey] = new stdClass();
@@ -149,7 +148,7 @@ class ControllerExtensionPaymentPaywithiyzico extends Controller {
             $paywithiyzico->basketItems[$shippigKey]->name          = $shipping['title'];
             $paywithiyzico->basketItems[$shippigKey]->category1     = "Kargo";
             $paywithiyzico->basketItems[$shippigKey]->itemType      = "VIRTUAL";
-      }
+        }
 
 
         $rand_value             = rand(100000,99999999);
@@ -159,11 +158,11 @@ class ControllerExtensionPaymentPaywithiyzico extends Controller {
 
         $paywithiyzico_json = json_encode($paywithiyzico,JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE);
 
-   
+
         $form_response = $this->model_extension_payment_paywithiyzico->createFormInitializeRequest($paywithiyzico_json,$authorization_data);
 
         $data['pwi_redirect'] = $form_response->payWithIyzicoPageUrl;
-        
+
         return $this->load->view('extension/payment/paywithiyzico_form',$data);
     }
 
@@ -171,26 +170,26 @@ class ControllerExtensionPaymentPaywithiyzico extends Controller {
     public function getCallBack()  {
 
         try {
-            
+
             $this->load->language('extension/payment/paywithiyzico');
 
             if(!isset($this->request->post['token']) || empty($this->request->post['token'])) {
 
                 $errorMessage = 'invalid token';
                 throw new \Exception($errorMessage);
-                
+
             }
 
             $this->load->model('checkout/order');
             $this->load->model('extension/payment/paywithiyzico');
-       
+
             $api_key                               = $this->config->get('payment_iyzico_api_key');
             $secret_key                            = $this->config->get('payment_iyzico_secret_key');
-            
+
             $conversation_id                       = (int) $this->session->data['conversation_id'];
             $order_id                              = (int) $this->session->data['order_id'];
             $customer_id                           = isset($this->session->data['customer_id']) ? (int) $this->session->data['customer_id'] : 0;
-            
+
             $detail_object = new stdClass();
 
             $detail_object->locale         = $this->language->get('code');
@@ -210,10 +209,10 @@ class ControllerExtensionPaymentPaywithiyzico extends Controller {
             $paywithiyzico_local_order->payment_id         = !empty($request_response->paymentId) ? (int) $request_response->paymentId : '';
             $paywithiyzico_local_order->order_id           = (int) $this->session->data['order_id'];
             $paywithiyzico_local_order->total_amount       = !empty($request_response->paidPrice) ? (float) $request_response->paidPrice : '';
-            $paywithiyzico_local_order->status             = $request_response->paymentStatus; 
+            $paywithiyzico_local_order->status             = $request_response->paymentStatus;
 
             $paywithiyzico_order_insert  = $this->model_extension_payment_paywithiyzico->insertIyzicoOrder($paywithiyzico_local_order);
-            
+
 
             if($request_response->paymentStatus != 'SUCCESS' || $request_response->status != 'success' || $order_id != $request_response->basketId ) {
 
@@ -225,7 +224,7 @@ class ControllerExtensionPaymentPaywithiyzico extends Controller {
 
             /* Save Card */
             if(isset($request_response->cardUserKey)) {
-                
+
                 if($customer_id) {
 
                     $cardUserKey = $this->model_extension_payment_paywithiyzico->findUserCardKey($customer_id,$api_key);
@@ -233,12 +232,12 @@ class ControllerExtensionPaymentPaywithiyzico extends Controller {
                     if($request_response->cardUserKey != $cardUserKey) {
 
                         $this->model_extension_payment_paywithiyzico->insertCardUserKey($customer_id,$request_response->cardUserKey,$api_key);
-           
+
                     }
-                }   
-       
+                }
+
             }
-                  
+
             $payment_id            = $this->db->escape($request_response->paymentId);
 
 
@@ -256,22 +255,22 @@ class ControllerExtensionPaymentPaywithiyzico extends Controller {
                 $messageInstallement = $request_response->cardFamily . ' - ' . $request_response->installment .$installement_field_desc;
                 $this->model_checkout_order->addOrderHistory($paywithiyzico_local_order->order_id, $this->config->get('payment_paywithiyzico_order_status'), $messageInstallement);
             } else {
-                 $this->model_checkout_order->addOrderHistory($paywithiyzico_local_order->order_id, $this->config->get('payment_paywithiyzico_order_status'), $message);    
+                $this->model_checkout_order->addOrderHistory($paywithiyzico_local_order->order_id, $this->config->get('payment_paywithiyzico_order_status'), $message);
             }
 
             return $this->response->redirect($this->url->link('extension/payment/paywithiyzico/successpage'));
-        
+
         } catch (Exception $e) {
 
-             $errorMessage = isset($request_response->errorMessage) ? $request_response->errorMessage : $e->getMessage();
+            $errorMessage = isset($request_response->errorMessage) ? $request_response->errorMessage : $e->getMessage();
 
-             $this->session->data['paywithiyzico_error_message'] = $errorMessage;
+            $this->session->data['paywithiyzico_error_message'] = $errorMessage;
 
             return $this->response->redirect($this->url->link('extension/payment/paywithiyzico/errorpage'));
 
         }
-        
-       
+
+
     }
 
     public function errorPage() {
@@ -426,8 +425,8 @@ class ControllerExtensionPaymentPaywithiyzico extends Controller {
         $data['footer'] = $this->load->controller('common/footer');
         $data['header'] = $this->load->controller('common/header');
         $data['success_icon']     = 'catalog/view/theme/default/image/payment/paywithiyzico_success_icon.png';
-            
-            /* Remove Order */
+
+        /* Remove Order */
         unset($this->session->data['order_id']);
 
         return $this->response->setOutput($this->load->view('extension/payment/paywithiyzico_success', $data));
@@ -442,14 +441,14 @@ class ControllerExtensionPaymentPaywithiyzico extends Controller {
 
         return $data;
 
-    } 
+    }
 
     private function shippingInfo() {
 
         if(isset($this->session->data['shipping_method'])) {
-            
+
             $shipping_info      = $this->session->data['shipping_method'];
-        
+
         } else {
 
             $shipping_info = false;
@@ -460,7 +459,7 @@ class ControllerExtensionPaymentPaywithiyzico extends Controller {
             if ($shipping_info['tax_class_id']) {
 
                 $shipping_info['tax'] = $this->tax->getRates($shipping_info['cost'], $shipping_info['tax_class_id']);
-            
+
             } else {
 
                 $shipping_info['tax'] = false;
@@ -471,14 +470,14 @@ class ControllerExtensionPaymentPaywithiyzico extends Controller {
         return $shipping_info;
     }
 
-    private function itemPriceSubTotal($products) {   
+    private function itemPriceSubTotal($products) {
 
         $price = 0;
 
         foreach ($products as $key => $product) {
-            
-            $price+= (float) $product['total'];     
-        }  
+
+            $price+= (float) $product['total'];
+        }
 
 
         $shippingInfo = $this->shippingInfo();
@@ -486,11 +485,11 @@ class ControllerExtensionPaymentPaywithiyzico extends Controller {
         if(is_object($shippingInfo) || is_array($shippingInfo)) {
 
             $price+= (float) $shippingInfo['cost'];
-            
+
         }
 
         return $price;
-        
+
     }
 
     private function priceParser($price) {
@@ -517,9 +516,20 @@ class ControllerExtensionPaymentPaywithiyzico extends Controller {
 
     private function getIpAdress() {
 
-          $ip_address = $_SERVER['REMOTE_ADDR'];
-        
+        $ip_address = $_SERVER['REMOTE_ADDR'];
+
         return $ip_address;
+    }
+
+    public function injectPwiLogoCss($route, &$data = false, &$output) {
+
+        $hook = '</footer>';
+        $js   = "<style> div#account-order img{
+                                width: 20%!important;
+                             }
+                </style></footer>";
+
+        $output = str_replace($hook,$js,$output);
     }
 
 }
