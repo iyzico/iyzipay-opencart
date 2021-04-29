@@ -2,7 +2,7 @@
 
 // Heading
 $_['heading_title']         			= 'iyzico';
-$_['text_iyzico'] 					= '<a href="http://www.iyzico.com/" target="_blank"><img src="view/image/payment/iyzico_logo.png" alt="iyzico" title="iyzico" /></a>';
+$_['text_iyzico'] 					    = '<a href="http://www.iyzico.com/" target="_blank"><img src="view/image/payment/iyzico_logo.png" alt="iyzico" title="iyzico" /></a>';
 $_['general_select']        			= 'Select';
 $_['live']                  			= 'Live';
 $_['sandbox']               			= 'Sandbox / Test';
@@ -52,10 +52,7 @@ $_['iyzico_update_screen'] 				= 'IYZICO UPDATE SCREEN';
 $_['current_version_name'] 				= 'Old Version:';
 $_['new_version_name'] 					= 'New Version:';
 $_['description_name'] 					= 'Description:';
-
-
-
-
-
-
+$_['iyzico_webhook']                    = 'Webhook Integration';
+$_['webhook_url_description']           = "Don't forget to do webhook Integration.";
+$_['iyzico_webhook_url_key_error']      = "Webhook URL Error! Please, re-install the iyzico plugin after delete the iyzico plugin. Send an email to entegrasyon@iyzico.com";
 

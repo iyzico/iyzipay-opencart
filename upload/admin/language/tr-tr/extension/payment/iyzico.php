@@ -54,3 +54,6 @@ $_['iyzico_update_screen'] 			= 'İYZİCO GÜNCELLEME EKRANI';
 $_['current_version_name'] 			= 'Mevcur Sürümünüz:';
 $_['new_version_name'] 				= 'Yeni Sürümünüz:';
 $_['description_name'] 				= 'Açıklama:';
+$_['iyzico_webhook']                = 'Webhook Entegrasyonu';
+$_['webhook_url_description']       = "Webhook entegrasyonunu yapmayı unutmayınız.";
+$_['iyzico_webhook_url_key_error']  = "Webhook URL üretilemedi. Lütfen plugini kaldırıp, yeniden kurunuz. Sorun devam ederse entegrasyon@iyzico.com'a mail atınız.";
