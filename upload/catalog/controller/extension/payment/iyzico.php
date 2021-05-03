@@ -592,7 +592,7 @@ class ControllerExtensionPaymentIyzico extends Controller {
 
                 if ($this->iyziSignature){
                     $secretKey = $this->config->get('payment_iyzico_secret_key');
-                    $createIyzicoSignature = base64_encode(sha1($secretKey . $this->iyziEventType . $this->token, true));
+                    $createIyzicoSignature = base64_encode(sha1($secretKey . $this->iyziEventType . $this->webhookToken, true));
 
                     if ($this->iyziSignature == $createIyzicoSignature){
                         $this->getCallBack('webhook', $params['paymentConversationId'], $params['token']);
