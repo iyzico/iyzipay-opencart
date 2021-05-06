@@ -5,3 +5,5 @@ $_['payment_failed'] 		  	= 'Ödeme Başarısız';
 $_['text_title'] 	 		  	= 'iyzico';
 $_['payment_field_desc'] 	 	= 'Ödeme Numarası: ';
 $_['installement_field_desc'] 	= 'Taksit Vade Komisyonu';
+$_['iyzico_onepage_desc']       = 'Ödeme formu, bilgilerinizi doldurup siparişi tamamla butonuna bastığınız zaman aktif olacaktır.';
+

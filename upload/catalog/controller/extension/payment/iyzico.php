@@ -15,6 +15,8 @@ class ControllerExtensionPaymentIyzico extends Controller {
         $this->load->language('extension/payment/iyzico');
         $data['form_class']         = $this->config->get('payment_iyzico_design');
         $data['form_type']          = $this->config->get('payment_iyzico_design');
+        $data['config_theme']       = $this->config->get('config_theme');
+        $data['onepage_desc']       = $this->language->get('iyzico_onepage_desc');
 
         if($data['form_type'] == 'onepage')
             $data['form_class'] = 'responsive';
