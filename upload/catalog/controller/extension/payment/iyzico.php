@@ -1,8 +1,8 @@
 <?php
 class ControllerExtensionPaymentIyzico extends Controller {
 
-    private $module_version      = VERSION;
-    private $module_product_name = 'eleven-1.1';
+    private $module_version      = '2.0';
+    private $module_product_name = 'eleven-2.0';
 
     private $paymentConversationId;
     private $webhookToken;

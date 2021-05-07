@@ -1,7 +1,6 @@
 <?php
 class ControllerExtensionPaymentIyzico extends Controller {
-    private $module_version      = '1.1';
-    private $module_product_name = 'eleven';
+    private $module_version      = '2.0';
 
     private $error = array();
 
@@ -145,6 +144,7 @@ class ControllerExtensionPaymentIyzico extends Controller {
         $data['locale']         = $this->language->get('code');
         $data['iyzico_webhook_url_key'] = $this->config->get('webhook_iyzico_webhook_url_key');
         $data['iyzico_webhook_url']  = HTTPS_CATALOG.'index.php?route=extension/payment/iyzico/webhook&key=' .$this->config->get('webhook_iyzico_webhook_url_key');
+        $data['module_version'] = $this->module_version;
 
         $this->response->setOutput($this->load->view('extension/payment/iyzico', $data));
     }
