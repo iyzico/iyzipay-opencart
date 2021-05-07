@@ -558,7 +558,17 @@ class ControllerExtensionPaymentIyzico extends Controller {
         if($overlay_status != 'hidden' && $overlay_status != '' || $api_channel == 'sandbox') {
 
             $hook = '</footer>';
-            $js   = "<script> window.iyz = { token: '".$token."', position: '".$overlay_status."', ideaSoft: false};</script>
+            $js   = "<style>
+	                @media screen and (max-width: 380px) {
+                        ._1xrVL7npYN5CKybp32heXk {
+		                    position: fixed;
+			                bottom: 0!important;
+    		                top: unset;
+    		                left: 0;
+    		                width: 100%;
+                        }
+                    }	
+	            </style><script> window.iyz = { token: '".$token."', position: '".$overlay_status."', ideaSoft: false, pwi:true};</script>
         <script src='https://static.iyzipay.com/buyer-protection/buyer-protection.js' type='text/javascript'></script></footer>";
 
             $output = str_replace($hook,$js,$output);

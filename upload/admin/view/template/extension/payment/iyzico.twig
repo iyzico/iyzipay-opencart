@@ -292,7 +292,14 @@
                                 </ol>
                             {% endif %}
                             <h1>Webhook URL</h1>
-                            <p>{{iyzico_webhook_url}}</p>
+                            {% if iyzico_webhook_url_key %}
+                                {{iyzico_webhook_url}}
+                                <br>
+                            {% else  %}
+                                <strong style="color:red;">{{ iyzico_webhook_url_key_error  }} </strong>
+                                <br>
+                                {{iyzico_webhook_url}}
+                            {% endif  %}
                         </div>
                     </div>
                     <div class="tab-pane" id="tab-help">
