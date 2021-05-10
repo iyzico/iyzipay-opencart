@@ -213,10 +213,11 @@ class ModelExtensionPaymentIyzico extends Model {
 
     public function curlPost($json,$authorization_data,$url) {
 
+        $phpVersion = phpversion();
 
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_URL, $url);
-        $content_length = 0;
+
         if ($json) {
             curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'POST');
             curl_setopt($curl, CURLOPT_POSTFIELDS, $json);
@@ -230,6 +231,7 @@ class ModelExtensionPaymentIyzico extends Model {
             $curl, CURLOPT_HTTPHEADER, array(
                 "Authorization: " .$authorization_data['authorization'],
                 "x-iyzi-rnd:".$authorization_data['rand_value'],
+                "opencart-php-version:".$phpVersion,
                 "Content-Type: application/json",
             )
         );
