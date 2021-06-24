@@ -68,6 +68,7 @@ class ControllerExtensionPaymentPaywithiyzico extends Controller {
         $data['footer']         = $this->load->controller('common/footer');
         $data['locale']         = $this->language->get('code');
         $data['version']        = $this->module_version;
+        $data['pwi_module_logo']=$this->language->get('pwi_module_setting_logo');
 
 
         foreach ($this->fields as $key => $field) {

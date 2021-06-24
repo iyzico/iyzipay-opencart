@@ -54,3 +54,4 @@ $_['paywithiyzico_update_screen'] 			= 'İYZİCO GÜNCELLEME EKRANI';
 $_['current_version_name'] 			= 'Mevcur Sürümünüz:';
 $_['new_version_name'] 				= 'Yeni Sürümünüz:';
 $_['description_name'] 				= 'Açıklama:';
+$_['pwi_module_setting_logo']       = '<img width="15%" src="view/image/payment/pay-with-iyzico-tr.svg?v=1.0.0" alt="paywithiyzico" title="paywithiyzico"/>';

@@ -52,6 +52,7 @@ $_['paywithiyzico_update_screen'] 				= 'IYZICO UPDATE SCREEN';
 $_['current_version_name'] 				= 'Old Version:';
 $_['new_version_name'] 					= 'New Version:';
 $_['description_name'] 					= 'Description:';
+$_['pwi_module_setting_logo']           = '<img width="15%" src="view/image/payment/pay-with-iyzico.svg?v=1.0.0" alt="paywithiyzico" title="paywithiyzico"/>';
 
 
 
