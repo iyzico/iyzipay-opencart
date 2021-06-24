@@ -2,7 +2,7 @@
 
 // Heading
 $_['heading_title']         			= 'Pay with iyzico';
-$_['text_paywithiyzico'] 				= '<a href="https://www.iyzico.com/isim-icin/iyzico-ile-ode" target="_blank"><img src="view/image/payment/paywithiyzico_logo.png" alt="paywithiyzico" title="paywithiyzico" /></a>';
+$_['text_paywithiyzico'] 				= '<a href="https://www.iyzico.com/isim-icin/iyzico-ile-ode" target="_blank"><img width="40%" src="view/image/payment/pay-with-iyzico.svg?v=1.0.0" alt="paywithiyzico" title="paywithiyzico" /></a>';
 $_['general_select']        			= 'Select';
 $_['live']                  			= 'Live';
 $_['sandbox']               			= 'Sandbox / Test';
@@ -52,6 +52,7 @@ $_['paywithiyzico_update_screen'] 				= 'IYZICO UPDATE SCREEN';
 $_['current_version_name'] 				= 'Old Version:';
 $_['new_version_name'] 					= 'New Version:';
 $_['description_name'] 					= 'Description:';
+$_['pwi_module_setting_logo']           = '<img width="15%" src="view/image/payment/pay-with-iyzico.svg?v=1.0.0" alt="paywithiyzico" title="paywithiyzico"/>';
 
 
 
