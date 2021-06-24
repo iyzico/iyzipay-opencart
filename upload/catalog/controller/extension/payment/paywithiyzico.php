@@ -1,8 +1,8 @@
 <?php
 
 class ControllerExtensionPaymentPaywithiyzico extends Controller {
-    private $module_version      = '1.2';
-    private $module_product_name = 'eleven-1.2';
+    private $module_version      = VERSION;
+    private $module_product_name = 'eleven-1.3';
 
 
     private function setcookieSameSite($name, $value, $expire, $path, $domain, $secure, $httponly) {
@@ -61,7 +61,7 @@ class ControllerExtensionPaymentPaywithiyzico extends Controller {
 
         $api_key                               = $this->config->get('payment_iyzico_api_key');
         $secret_key                            = $this->config->get('payment_iyzico_secret_key');
-        $payment_source                        = "OPENCART-".$this->module_version."|".$this->module_product_name."|".$this->config->get('payment_paywithiyzico_design');
+        $payment_source                        = "OPENCART-".$this->module_version."|".$this->module_product_name."|PWI";
 
 
         $user_create_date                      = $this->model_extension_payment_paywithiyzico->getUserCreateDate($user_id);
