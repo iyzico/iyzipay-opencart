@@ -1,6 +1,6 @@
 <?php
 class ControllerExtensionPaymentIyzico extends Controller {
-    private $module_version      = '2.0';
+    private $module_version      = '2.1';
 
     private $error = array();
 
@@ -65,7 +65,6 @@ class ControllerExtensionPaymentIyzico extends Controller {
             'validateField' => 'blank',
             'name'          => 'webhook_iyzico_webhook_url_key',
         )
-
     );
 
     public function index() {
@@ -113,7 +112,6 @@ class ControllerExtensionPaymentIyzico extends Controller {
             }
         }
 
-
         $this->document->setTitle($this->language->get('heading_title'));
         $this->document->addStyle('view/stylesheet/iyzico/iyzico.css');
         $this->document->addScript('view/javascript/iyzico/accordion_iyzico.js','footer');
@@ -146,7 +144,24 @@ class ControllerExtensionPaymentIyzico extends Controller {
         $data['iyzico_webhook_url']  = HTTPS_CATALOG.'index.php?route=extension/payment/iyzico/webhook&key=' .$this->config->get('webhook_iyzico_webhook_url_key');
         $data['module_version'] = $this->module_version;
 
-        $this->response->setOutput($this->load->view('extension/payment/iyzico', $data));
+        $pwi_status    = $this->config->get('payment_paywithiyzico_status');
+        $pwi_status_after_enabled_pwi = $this->config->get('payment_iyzico_pwi_first_enabled_status');
+
+        $data_pwi_load_check['pwi_status_error']  = $this->language->get('pwi_status_error');
+        $data_pwi_load_check['pwi_status_error_detail']  = $this->language->get('pwi_status_error_detail');
+        $data_pwi_load_check['dev_iyzipay_opencart_link']  = $this->language->get('dev_iyzipay_opencart_link');
+        $data_pwi_load_check['dev_iyzipay_detail']  = $this->language->get('dev_iyzipay_detail');
+        $data_pwi_load_check['header']         = $this->load->controller('common/header');
+        $data_pwi_load_check['column_left']    = $this->load->controller('common/column_left');
+
+        //if pwi disabled and pwi first enabled status 0, set output pwi load page
+        if ($pwi_status == 0 && $pwi_status_after_enabled_pwi != 1){
+            $this->response->setOutput($this->load->view('extension/payment/iyzico_pwi_load_control', $data_pwi_load_check));
+        }
+        else{
+            $this->setPWIModuleFirstStatus($pwi_status_after_enabled_pwi);
+            $this->response->setOutput($this->load->view('extension/payment/iyzico', $data));
+        }
     }
 
     private function getApiConnection($api_key,$secret_key) {
@@ -241,6 +256,7 @@ class ControllerExtensionPaymentIyzico extends Controller {
     public function uninstall() {
 
         $this->load->model('extension/payment/iyzico');
+        $this->db->query("DELETE FROM " . DB_PREFIX . "setting WHERE store_id = '0' AND code = 'payment_iyzico_pwi_status'");
         $this->model_extension_payment_iyzico->uninstall();
         $this->model_setting_event->deleteEventByCode('overlay_script');
         $this->model_setting_event->deleteEventByCode('module_notification');
@@ -337,4 +353,11 @@ class ControllerExtensionPaymentIyzico extends Controller {
         return true;
     }
 
+    //if pwi enabled, set pwi_status key in setting table
+    private function setPWIModuleFirstStatus($pwiStatus)
+    {
+        if (!isset($pwiStatus)){
+            $this->db->query("INSERT INTO `" . DB_PREFIX . "setting` (`code`, `key`, `value`, `serialized`) VALUES ('payment_iyzico_pwi_status', 'payment_iyzico_pwi_first_enabled_status', '1', '0');");
+        }
+    }
 }

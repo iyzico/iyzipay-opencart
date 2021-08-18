@@ -1,7 +1,7 @@
 <?php
 
 // Heading
-$_['heading_title']         			= 'iyzico';
+$_['heading_title']         			= 'iyzico Checkout Form';
 $_['text_iyzico'] 					    = '<a href="http://www.iyzico.com/" target="_blank"><img src="view/image/payment/iyzico_logo.png" alt="iyzico" title="iyzico" /></a>';
 $_['general_select']        			= 'Select';
 $_['live']                  			= 'Live';
@@ -56,3 +56,7 @@ $_['iyzico_webhook']                    = 'Webhook Integration';
 $_['webhook_url_description']           = "Don't forget to do webhook Integration.";
 $_['iyzico_webhook_url_key_error']      = "Webhook URL Error! Please, try these steps respectively.  1- Refresh web page 1-2 times. 2- If webhook url doesn't create , Please, after delete the iyzico plugin, re-install the iyzico plugin and save module settings. 3- Send an email to entegrasyon@iyzico.com";
 
+$_['pwi_status_error']                  = "Pay with iyzico module is not enable!";
+$_['pwi_status_error_detail']           = "You can not access Settings of iyzico Checkout Form Module without installing the pay with iyzico module.";
+$_['dev_iyzipay_opencart_link']         = "https://dev.iyzipay.com/tr/acik-kaynak/opencart";
+$_['dev_iyzipay_detail']                = "Complete the installation of the Opencart 3.x - Pay with iyzico module via dev.iyzipay:";

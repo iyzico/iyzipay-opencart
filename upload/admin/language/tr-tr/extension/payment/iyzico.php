@@ -1,7 +1,7 @@
 <?php
 
 // Heading
-$_['heading_title']         		= 'iyzico';
+$_['heading_title']         		= 'iyzico Ödeme Formu';
 $_['text_iyzico'] 					= '<a href="http://www.iyzico.com/" target="_blank"><img src="view/image/payment/iyzico_logo.png" alt="iyzico" title="iyzico" /></a>';
 $_['general_select']        		= 'Seçiniz';
 $_['live']                  		= 'Live';
@@ -57,3 +57,8 @@ $_['description_name'] 				= 'Açıklama:';
 $_['iyzico_webhook']                = 'Webhook Entegrasyonu';
 $_['webhook_url_description']       = "Webhook entegrasyonunu yapmayı unutmayınız.";
 $_['iyzico_webhook_url_key_error']  = "Webhook URL üretilemedi. Lütfen sırasıyla bu adımları deneyin. 1- Web sayfasını 1-2 defa yenileyin. 2- Webhook URL üretilmediyse lütfen plugini kaldırıp, yeniden kurun ve ayarları kaydedin. 3- Sorun devam ederse entegrasyon@iyzico.com'a mail atınız.";
+
+$_['pwi_status_error']              = "iyzico İle Öde modülü aktif değil!";
+$_['pwi_status_error_detail']       = "iyzico ile Öde modülünü kurmadan iyzico Ödeme Formu ayarlarına erişemezsiniz.";
+$_['dev_iyzipay_opencart_link']     = "https://dev.iyzipay.com/tr/acik-kaynak/opencart";
+$_['dev_iyzipay_detail']            = "Opencart 3.x - iyzico ile Öde modülünün kurulumunu tamamlayınız: ";
