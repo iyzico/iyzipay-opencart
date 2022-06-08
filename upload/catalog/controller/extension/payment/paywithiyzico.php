@@ -2,7 +2,7 @@
 
 class ControllerExtensionPaymentPaywithiyzico extends Controller {
     private $module_version      = VERSION;
-    private $module_product_name = 'eleven-1.3';
+    private $module_product_name = 'eleven-1.5';
 
 
     private function setcookieSameSite($name, $value, $expire, $path, $domain, $secure, $httponly) {
@@ -75,7 +75,17 @@ class ControllerExtensionPaymentPaywithiyzico extends Controller {
 
         /* Order Detail */
         $paywithiyzico = new stdClass;
-        $paywithiyzico->locale                    = $this->language->get('code');
+
+        $language = $this->config->get('payment_iyzico_language');
+        $str_language = mb_strtolower($language);
+
+        if(empty($str_language) or $str_language == 'null')
+        {
+          $paywithiyzico->locale  			 = $this->language->get('code');
+        }else {
+          $paywithiyzico->locale   			 = $str_language;
+        }
+
         $paywithiyzico->conversationId            = $order_id;
         $paywithiyzico->price                        = $this->priceParser($this->itemPriceSubTotal($products) * $order_info['currency_value']);
         $paywithiyzico->paidPrice                    = $this->priceParser($order_info['total'] * $order_info['currency_value']);
@@ -417,6 +427,16 @@ class ControllerExtensionPaymentPaywithiyzico extends Controller {
         $this->document->addStyle('catalog/view/javascript/paywithiyzico/paywithiyzico_success.css');
 
         $data['continue'] = $this->url->link('account/order', '', true);
+        $language = $this->config->get('payment_iyzico_language');
+        $str_language = mb_strtolower($language);
+
+        if(empty($str_language) or $str_language == 'null')
+        {
+          $locale 			 = $this->language->get('code');
+        }else {
+          $locale  			 = $str_language;
+        }
+        $data['locale'] = $locale;
 
         $data['column_left'] = $this->load->controller('common/column_left');
         $data['column_right'] = $this->load->controller('common/column_right');

@@ -3,43 +3,78 @@
 class ModelExtensionPaymentPaywithiyzico extends Model {
 
     public function getMethod($address, $total) {
+       $currency_code = $this->session->data['currency'];
+       if(!empty($currency_code) and $currency_code == 'TRY' or $currency_code == 'try')
+       {
+         $payment_paywithiyzico_geo_zone_id = $this->config->get('payment_paywithiyzico_geo_zone_id');
+         $payment_paywithiyzico_geo_zone_id = $this->db->escape($payment_paywithiyzico_geo_zone_id);
+         $address_country_id 		= $this->db->escape($address['country_id']);
+         $address_zone_id 			= $this->db->escape($address['zone_id']);
 
-        $payment_paywithiyzico_geo_zone_id = $this->config->get('payment_paywithiyzico_geo_zone_id');
-        $payment_paywithiyzico_geo_zone_id = $this->db->escape($payment_paywithiyzico_geo_zone_id);
-        $address_country_id 		= $this->db->escape($address['country_id']);
-        $address_zone_id 			= $this->db->escape($address['zone_id']);
+         $query = $this->db->query("SELECT * FROM `" . DB_PREFIX . "zone_to_geo_zone` WHERE `geo_zone_id` = '" . $payment_paywithiyzico_geo_zone_id . "' AND `country_id` = '" . $address_country_id . "' AND (`zone_id` = '" . $address_zone_id . "' OR `zone_id` = '0')");
 
-        $query = $this->db->query("SELECT * FROM `" . DB_PREFIX . "zone_to_geo_zone` WHERE `geo_zone_id` = '" . $payment_paywithiyzico_geo_zone_id . "' AND `country_id` = '" . $address_country_id . "' AND (`zone_id` = '" . $address_zone_id . "' OR `zone_id` = '0')");
+         if ($this->config->get('payment_paywithiyzico_total') > $total) {
+             $status = false;
+         } elseif (!$this->config->get('payment_paywithiyzico_geo_zone_id')) {
+             $status = true;
+         } elseif ($query->num_rows) {
+             $status = true;
+         } else {
+             $status = false;
+         }
 
-        if ($this->config->get('payment_paywithiyzico_total') > $total) {
-            $status = false;
-        } elseif (!$this->config->get('payment_paywithiyzico_geo_zone_id')) {
-            $status = true;
-        } elseif ($query->num_rows) {
-            $status = true;
-        } else {
-            $status = false;
-        }
+         $language = $this->config->get('payment_iyzico_language');
+         $str_language = mb_strtolower($language);
+         $this->load->language('extension/payment/paywithiyzico');
 
-        $method_data = array();
 
-        $this->load->language('extension/payment/paywithiyzico');
+         if(empty($str_language) or $str_language == 'null')
+         {
+             $title_language = $this->language->get('pwi_img_title'). " " .$this->language->get('pwi_title');
 
-        if ($status) {
-            $method_data = array(
-                'code'       => 'paywithiyzico',
-                'title' => $this->language->get('pwi_img_title'). " " .$this->language->get('pwi_title'),
-                'terms'      => '',
-                'sort_order' => $this->config->get('payment_paywithiyzico_sort_order')
-            );
-        }
+         }elseif ($str_language == 'tr') {
 
-        return $method_data;
+           $title_language = '<img width="20%" src="admin/view/image/payment/pay-with-iyzico-tr.svg"/>'.''.'iyzico ile Öde';
+         }else {
+
+           $title_language = '<img width="20%" src="admin/view/image/payment/pay-with-iyzico.svg"/>'.''.'Pay with iyzico';
+         }
+
+         $method_data = array();
+
+
+
+         if ($status) {
+             $method_data = array(
+                 'code'       => 'paywithiyzico',
+                 'title' => $title_language,
+                 'terms'      => '',
+                 'sort_order' => $this->config->get('payment_paywithiyzico_sort_order')
+             );
+         }
+
+         return $method_data;
+
+       }
+
+
     }
 
     private function paywithiyzicoMultipLangTitle($title) {
 
         $this->load->language('extension/payment/paywithiyzico');
+
+        $this->load->language('extension/payment/iyzico');
+        $language = $this->config->get('payment_iyzico_language');
+        $str_language = mb_strtolower($language);
+
+        if(empty($str_language) or $str_language == 'null')
+        {
+            $title_language 			 = $this->language->get('code');
+        }else {
+            $title_language 			 = $str_language;
+        }
+
 
         if($title) {
 
@@ -50,7 +85,7 @@ class ModelExtensionPaymentPaywithiyzico extends Model {
                 foreach ($parser as $key => $parse) {
                     $result = explode('=',$parse);
 
-                    if($this->language->get('code') == $result[0]) {
+                    if($title_language == $result[0]) {
                         $new_title = $result[1];
                         break;
                     }
@@ -245,7 +280,7 @@ class ModelExtensionPaymentPaywithiyzico extends Model {
 
     public function insertCardUserKey($customer_id,$card_user_key,$api_key) {
 
-        $insertCard = $this->db->query("INSERT INTO `" . DB_PREFIX . "paywithiyzico_card` SET 
+        $insertCard = $this->db->query("INSERT INTO `" . DB_PREFIX . "paywithiyzico_card` SET
 			`customer_id` 	= '" . $this->db->escape($customer_id) . "',
 			`card_user_key` = '" . $this->db->escape($card_user_key) . "',
 			`api_key` 		= '" . $this->db->escape($api_key) . "'");
@@ -270,9 +305,9 @@ class ModelExtensionPaymentPaywithiyzico extends Model {
 
     public function insertIyzicoOrder($order) {
 
-        $insertOrder = $this->db->query("INSERT INTO `" . DB_PREFIX . "paywithiyzico_order` SET 
+        $insertOrder = $this->db->query("INSERT INTO `" . DB_PREFIX . "paywithiyzico_order` SET
 			`payment_id` = '" . $this->db->escape($order->payment_id) . "',
-			`order_id` = '" . $this->db->escape($order->order_id) . "', 
+			`order_id` = '" . $this->db->escape($order->order_id) . "',
 			`total_amount` = '" . $this->db->escape($order->total_amount) . "',
 			`status` = '" . $this->db->escape($order->status) . "'");
 
