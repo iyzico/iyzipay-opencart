@@ -13,6 +13,7 @@ $_['secret_key']            		= 'Güvenlik Anahtarı';
 $_['apikey_field_tooltip']          = 'iyzico panelinizin ayarlar bölümünden erişebileceğiniz api anahtarı';
 $_['secretkey_field_tooltip']       = 'iyzico panelinizin ayarlar bölümünden erişebileceğiniz güvenlik api anahtarı';
 $_['view_select']           		= 'Görünüm';
+$_['payment_iyzico_language_name']           		= 'Ödeme Formu Dili';
 $_['design_field_tooltip']          = 'Ödeme formunuzun görünümü';
 $_['order_status']          		= 'Sipariş Durumu';
 $_['order_status_tooltip']          = 'Sipariş alındığında müşteriye gösterilecek durum bilgisi';
@@ -61,4 +62,11 @@ $_['iyzico_webhook_url_key_error']  = "Webhook URL üretilemedi. Lütfen sıras�
 $_['pwi_status_error']              = "iyzico İle Öde modülü aktif değil!";
 $_['pwi_status_error_detail']       = "iyzico ile Öde modülünü kurmadan iyzico Ödeme Formu ayarlarına erişemezsiniz.";
 $_['dev_iyzipay_opencart_link']     = "https://dev.iyzipay.com/tr/acik-kaynak/opencart";
+<<<<<<< Updated upstream
 $_['dev_iyzipay_detail']            = "Opencart 3.x - iyzico ile Öde modülünün kurulumunu tamamlayınız: ";
+=======
+$_['dev_iyzipay_detail']            = "Opencart 3.x - iyzico ile Öde modülünün kurulumunu tamamlayınız: ";
+$_['checkout_language_automatic']   = 'Otomatik';
+$_['checkout_language_turkish']     = 'Türkçe';
+$_['checkout_language_english']     = 'İngilizce';
+>>>>>>> Stashed changes

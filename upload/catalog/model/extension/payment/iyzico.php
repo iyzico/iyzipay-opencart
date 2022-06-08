@@ -40,6 +40,18 @@ class ModelExtensionPaymentIyzico extends Model {
     private function iyzicoMultipLangTitle($title) {
 
         $this->load->language('extension/payment/iyzico');
+<<<<<<< Updated upstream
+=======
+        $language = $this->config->get('payment_iyzico_language');
+        $str_language = mb_strtolower($language);
+
+        if(empty($str_language) or $str_language == 'null')
+        {
+            $title_language 			 = $this->language->get('code');
+        }else {
+            $title_language 			 = $str_language;
+        }
+>>>>>>> Stashed changes
 
         if($title) {
 
@@ -50,7 +62,11 @@ class ModelExtensionPaymentIyzico extends Model {
                 foreach ($parser as $key => $parse) {
                     $result = explode('=',$parse);
 
+<<<<<<< Updated upstream
                     if($this->language->get('code') == $result[0]) {
+=======
+                    if($title_language == $result[0]) {
+>>>>>>> Stashed changes
                         $new_title = $result[1];
                         break;
                     }
@@ -246,13 +262,18 @@ class ModelExtensionPaymentIyzico extends Model {
 
     public function insertCardUserKey($customer_id,$card_user_key,$api_key) {
 
+<<<<<<< Updated upstream
         $insertCard = $this->db->query("INSERT INTO `" . DB_PREFIX . "iyzico_card` SET 
+=======
+        $insertCard = $this->db->query("INSERT INTO `" . DB_PREFIX . "iyzico_card` SET
+>>>>>>> Stashed changes
 			`customer_id` 	= '" . $this->db->escape($customer_id) . "',
 			`card_user_key` = '" . $this->db->escape($card_user_key) . "',
 			`api_key` 		= '" . $this->db->escape($api_key) . "'");
 
         return $insertCard;
     }
+<<<<<<< Updated upstream
 
     public function findUserCardKey($customer_id,$api_key) {
 
@@ -272,8 +293,29 @@ class ModelExtensionPaymentIyzico extends Model {
     public function insertIyzicoOrder($order) {
 
         $insertOrder = $this->db->query("INSERT INTO `" . DB_PREFIX . "iyzico_order` SET 
+=======
+
+    public function findUserCardKey($customer_id,$api_key) {
+
+        $customer_id = $this->db->escape($customer_id);
+        $api_key 	 = $this->db->escape($api_key);
+
+        $card_user_key = (object) $this->db->query("SELECT card_user_key FROM " . DB_PREFIX . "iyzico_card WHERE customer_id = '" . $customer_id ."' and api_key = '".$api_key."' ORDER BY iyzico_card_id DESC");
+
+        if(count($card_user_key->rows)) {
+
+            return $card_user_key->rows[0]['card_user_key'];
+        }
+
+        return '';
+    }
+
+    public function insertIyzicoOrder($order) {
+
+        $insertOrder = $this->db->query("INSERT INTO `" . DB_PREFIX . "iyzico_order` SET
+>>>>>>> Stashed changes
 			`payment_id` = '" . $this->db->escape($order->payment_id) . "',
-			`order_id` = '" . $this->db->escape($order->order_id) . "', 
+			`order_id` = '" . $this->db->escape($order->order_id) . "',
 			`total_amount` = '" . $this->db->escape($order->total_amount) . "',
 			`status` = '" . $this->db->escape($order->status) . "'");
 

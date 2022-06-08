@@ -1,6 +1,10 @@
 <?php
 class ControllerExtensionPaymentIyzico extends Controller {
+<<<<<<< Updated upstream
     private $module_version      = '2.1';
+=======
+    private $module_version      = '2.3';
+>>>>>>> Stashed changes
 
     private $error = array();
 
@@ -24,6 +28,10 @@ class ControllerExtensionPaymentIyzico extends Controller {
         array(
             'validateField' => 'error_design',
             'name'          => 'payment_iyzico_design',
+        ),
+        array(
+            'validateField' => 'error_language',
+            'name'          => 'payment_iyzico_language',
         ),
         array(
             'validateField' => 'error_order_status',
@@ -307,7 +315,7 @@ class ControllerExtensionPaymentIyzico extends Controller {
             } else if($request_modify['payment_iyzico_api_channel'] == 'sandbox') {
 
                 $request_modify['payment_iyzico_api_url'] = 'https://sandbox-api.iyzipay.com';
-                $request_modify['payment_iyzico_overlay_status'] = 'hidden';
+                
 
             }
 
@@ -341,6 +349,7 @@ class ControllerExtensionPaymentIyzico extends Controller {
     {
 
         $webhookUrl = $this->config->get('webhook_iyzico_webhook_url_key');
+<<<<<<< Updated upstream
 
         $uniqueUrlId = substr(base64_encode(time() . mt_rand()),15,6);
 
@@ -353,6 +362,20 @@ class ControllerExtensionPaymentIyzico extends Controller {
         return true;
     }
 
+=======
+
+        $uniqueUrlId = substr(base64_encode(time() . mt_rand()),15,6);
+
+        if (!$webhookUrl) {
+            $this->model_setting_setting->editSetting('webhook_iyzico',array(
+                "webhook_iyzico_webhook_url_key" => $uniqueUrlId
+            ));
+        }
+
+        return true;
+    }
+
+>>>>>>> Stashed changes
     //if pwi enabled, set pwi_status key in setting table
     private function setPWIModuleFirstStatus($pwiStatus)
     {

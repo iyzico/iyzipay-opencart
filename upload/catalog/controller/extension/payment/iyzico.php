@@ -2,14 +2,23 @@
 class ControllerExtensionPaymentIyzico extends Controller {
 
     private $module_version      = VERSION;
+<<<<<<< Updated upstream
     private $module_product_name = 'eleven-2.1';
+=======
+    private $module_product_name = 'eleven-2.3';
+>>>>>>> Stashed changes
 
     private $paymentConversationId;
     private $webhookToken;
     private $iyziEventType;
     private $iyziSignature;
+<<<<<<< Updated upstream
 
 
+=======
+
+
+>>>>>>> Stashed changes
     public function index() {
 
         $this->load->language('extension/payment/iyzico');
@@ -59,9 +68,15 @@ class ControllerExtensionPaymentIyzico extends Controller {
             }
         }
     }
+<<<<<<< Updated upstream
 
     public function getCheckoutFormToken() {
 
+=======
+
+    public function getCheckoutFormToken() {
+
+>>>>>>> Stashed changes
         $this->checkAndSetCookieSameSite();
 
         $this->load->model('checkout/order');
@@ -90,8 +105,22 @@ class ControllerExtensionPaymentIyzico extends Controller {
 
         /* Order Detail */
         $iyzico = new stdClass;
+<<<<<<< Updated upstream
         $iyzico->locale 					  = $this->language->get('code');
         $iyzico->conversationId 			  = $order_id;
+=======
+      
+        $language = $this->config->get('payment_iyzico_language');
+        $str_language = mb_strtolower($language);
+
+        if(empty($str_language) or $str_language == 'null')
+        {
+            $iyzico->locale  			 = $this->language->get('code');
+        }else {
+            $iyzico->locale  			 = $str_language;
+        }
+        $iyzico->conversationId 			        = $order_id;
+>>>>>>> Stashed changes
         $iyzico->price                        = $this->priceParser($this->itemPriceSubTotal($products) * $order_info['currency_value']);
         $iyzico->paidPrice                    = $this->priceParser($order_info['total'] * $order_info['currency_value']);
         $iyzico->currency                     = $order_info['currency_code'];
@@ -211,8 +240,16 @@ class ControllerExtensionPaymentIyzico extends Controller {
             $customer_id                           = isset($this->session->data['customer_id']) ? (int) $this->session->data['customer_id'] : 0;
 
             $detail_object = new stdClass();
+            $language = $this->config->get('payment_iyzico_language');
+            if(empty($language) or $language == 'null')
+            {
+                $detail_object->locale  				 = $this->language->get('code');
+            }elseif ($language == 'TR' or $language == 'tr') {
+                $detail_object->locale 					 = 'tr';
+            }else {
+                $detail_object->locale  				 = 'en';
+            }
 
-            $detail_object->locale         = $this->language->get('code');
             $detail_object->conversationId = $conversation_id;
             $detail_object->token          = $this->db->escape($token);
 
@@ -294,6 +331,15 @@ class ControllerExtensionPaymentIyzico extends Controller {
 
         } catch (Exception $e) {
 
+<<<<<<< Updated upstream
+=======
+            if($request_response->paymentStatus == 'INIT_BANK_TRANSFER' && $request_response->status == 'success'){
+                $orderMessage = 'iyzico Banka Havale/EFT ödemesi bekleniyor.';
+                $this->model_checkout_order->addOrderHistory($iyzico_local_order->order_id, $this->config->get('payment_iyzico_order_status'), $orderMessage);
+                return $this->response->redirect($this->url->link('extension/payment/iyzico/successpage'));
+            }
+
+>>>>>>> Stashed changes
             if ($webhook == 'webhook'){
                 return $this->webhookHttpResponse("errorCode: ".$request_response->errorCode ." - " . $request_response->errorMessage, 404);
             }
@@ -449,6 +495,18 @@ class ControllerExtensionPaymentIyzico extends Controller {
 
         $this->document->addStyle('catalog/view/javascript/iyzico/iyzico_success.css');
 
+        $language = $this->config->get('payment_iyzico_language');
+        $str_language = mb_strtolower($language);
+
+        if(empty($str_language) or $str_language == 'null')
+        {
+            $locale              = $this->language->get('code');
+        }else {
+            $locale              = $str_language;
+        }
+
+        $data['locale'] = $locale;
+
         $data['continue'] = $this->url->link('account/order', '', true);
 
         $data['column_left'] = $this->load->controller('common/column_left');
@@ -567,7 +625,11 @@ class ControllerExtensionPaymentIyzico extends Controller {
     		                left: 0;
     		                width: 100%;
                         }
+<<<<<<< Updated upstream
                     }	
+=======
+                    }
+>>>>>>> Stashed changes
 	            </style><script> window.iyz = { token: '".$token."', position: '".$overlay_status."', ideaSoft: false, pwi:true};</script>
         <script src='https://static.iyzipay.com/buyer-protection/buyer-protection.js' type='text/javascript'></script></footer>";
 

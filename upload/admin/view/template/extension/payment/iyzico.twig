@@ -174,6 +174,34 @@
                             </div>
                         </div>
                         <div class="form-group required">
+                            <label class="col-sm-2 control-label" for="test">{{ payment_iyzico_language_name }}
+                                <span data-toggle="tooltip" title="Default ,TR ,EN"></span>
+
+                            </label>
+                            <div class="col-sm-10">
+                                <select class="form-control" name="payment_iyzico_language">
+
+                                    {% if payment_iyzico_language  is empty or payment_iyzico_language == 'null' %}
+                                        <option value="null" selected="selected">{{checkout_language_automatic}}</option>
+                                        <option value="TR">{{checkout_language_turkish}}</option>
+                                        <option value="EN">{{checkout_language_english}}</option>
+                                    {% elseif payment_iyzico_language == 'TR' %}
+                                    <option value="null" >{{checkout_language_automatic}}</option>
+                                    <option value="TR" selected="selected">{{checkout_language_turkish}}</option>
+                                    <option value="EN">İngilizce</option>
+                                    {% else %}
+                                      <option value="null">{{checkout_language_automatic}}</option>
+                                      <option value="TR">{{checkout_language_turkish}}</option>
+                                      <option value="EN" selected="selected">{{checkout_language_english}}</option>
+
+                                    {% endif %}
+                                </select>
+                                {% if error_design %}
+                                    <div class="text-danger">{{ error_language }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="form-group required">
                             <label class="col-sm-2 control-label" for="test">{{cancel_order_status}}
                                 <span data-toggle="tooltip" title="{{ cancel_order_status_tooltip }}"></span>
                             </label>
@@ -251,12 +279,21 @@
                             </div>
                         </div>
                         <div class="col-sm-12">
+                        {% if locale == 'tr' %}
                             <h1>Korumalı Alışveriş Bilgi Kutucuğu Nedir?</h1>
                             <p>Korumalı Alışveriş bilgi kutucuğu, iyzico’nun Korumalı Alışveriş programına dahil olan (ürününü kullanan) e-ticaret sitelerinin kullandığı bir araçtır. Müşterilerin, e-ticaret sitelerinden alışverişle ilgili yaşadığı güven sorununun önüne geçmeyi amaçlayan bu uygulamayı sitenizin sadece ödeme sayfasında değil, sitenizdeki tüm sayfalara ekleyerek ziyaretçilerinizin güvenini kazanabilir, satışlarınıza katkı sağlayabilirsiniz. </p>
 
                             <p>E-ticaret müşterilerinin güvenmedikleri bir siteden alışveriş yapma olasılığı oldukça azdır. Bankacılık Düzenleme ve Denetleme Kurulu lisanslı iyzico’nun ‘Korumalı Alışveriş’ bilgi kutucuğu, o sitenin iyzico güvencesi altında olduğuna, ihtiyaç halinde iyzico destek ekibinin olası sorunları çözeceği anlamına gelir. Bu, alışveriş için sitenize gelen müşterilerinize güvenli alışveriş yapabilecekleri mesajı verir.</p>
 
                             <p>Hesabınızda korumalı alışveriş aktif değilse <a href="mailto:destek@iyzico.com" target="_top">destek@iyizco.com</a> mail atabilirsiniz.</p>
+                          {% elseif locale == 'en' %}
+                          <p> Protected Shopping information box is a tool used by e-commerce sites that are included in iyzico's Protected Shopping program (using its product). You can gain the trust of your visitors and contribute to your sales by adding this application, which aims to prevent the trust problem of customers with shopping from e-commerce sites, not only on the payment page of your site, but also on all pages on your site.</p>
+
+              						<p>E-commerce customers are less likely to shop from a site they do not trust. The 'Protected Shopping' info box of iyzico, licensed by the Banking Regulation and Supervision Agency, means that that site is under iyzico's guarantee, and that the iyzico support team will solve any potential problems if needed. This gives the message that your customers who come to your site for shopping can shop safely.</p>
+
+              						<p>If protected shopping is not active in your account <a href="mailto:destek@iyzico.com" target="_top">destek@iyizco.com</a> you can mail.</p>
+
+                        {%  endif %}
 
                         </div>
                     </div>
@@ -344,11 +381,6 @@
                                     </ul>
                                     <p>Müşterileriniz ödeme adımına geldiği zaman tüm ekranı şeffaf olarak kaplayan Mobil ve Web uyumlu İyzico ödeme formunun görünmesini sağlar.</p>
                                 </div>
-                                <div class="accordionBox">Korumalı Alışveriş Nedir ?</div>
-                                <div class="panelBox">
-                                    <p>Korumalı Alışveriş müşterilerinizin ve sizin İyzico güvencesi altında olduğunuzu belirten bir servistir.</p>
-                                    <p>Müşterilerinize <strong>İyzico Korumalı Alışveriş</strong>  güvencesi altında olduğunu göstermek için “Korumalı Alışveriş” sekmesinden Korumalı Alışveriş <strong>logosunun</strong> sayfanızın neresinde gözükmesini istediğinizi seçmeniz yeterlidir.</p>
-                                </div>
                                 <div class="accordionBox">Bağlantı durumu: “başarısız” sebebi ne olabilir ?</div>
                                 <div class="panelBox">
                                     <ul>
@@ -366,6 +398,53 @@
                                 </div>
                             {% elseif locale == 'en' %}
 
+<<<<<<< Updated upstream
+=======
+                            <div class="accordionBox">What is Live  and Sandbox   ?</div>
+					<div class="panelBox">
+					    <p><stong>Live</stong> and <strong>Sandbox</strong> reflects the type of API you will use.</p>
+					    <ul>
+					        <li><strong>Live API</strong></li>
+					    </ul>
+					    <p>Live Api is used to get real payment from your customers. It is used to receive payments via Iyzico through the cards of your customers.</p>
+					    <ul>
+					        <li><strong>Sandbox API</strong></li>
+					    </ul>
+					    <p>It is used to test with Iyzico Api before opening your web page to your customers. Requests made are not real requests, they are used for development purposes only.</p>
+					</div>
+
+					<div class="accordionBox">What is Responsive and Popup  ?</div>
+					<div class="panelBox">
+					    <ul>
+					        <li><strong>Responsive</strong></li>
+					    </ul>
+					    <p>It ensures that the payment form appears as Mobile and Web compatible when your customers come to the payment step.</p>
+					    <ul>
+					        <li><strong>Popup</strong></li>
+					    </ul>
+					    <p>When your customers come to the payment step, it provides the mobile and web compatible Iyzico payment form, which covers the entire screen transparently.</p>
+					</div>
+				
+					<div class="accordionBox">What is the Note Connection error ?</div>
+					<div class="panelBox">
+					    <ul>
+					        <li><strong>Have you checked your API information??</strong></li>
+					    </ul>
+					    <p>Make sure that the "<strong>API Key</strong>" and "<strong>Security Key</strong>" information you received from iyzico are correct.</p>
+					    <ul>
+					        <li><strong>Did you check the TLS version?</strong></li>
+					    </ul>
+					    <p>You can upgrade the OpenSSL version to a minimum of 1.0.1 and the curl version to 7.30.4 by contacting your server provider.</p>
+					    <ul>
+					        <li><strong>Does your problem still persist?</strong></li>
+					    </ul>
+					    <p>You can contact us. Support: <a href="mailto:destek@iyzico.com" target="_top">destek@iyzico.com</a>
+					</div>
+
+				</p>
+
+
+>>>>>>> Stashed changes
                             {% endif %}
 
 
@@ -394,7 +473,11 @@
 
     function getApiValid() {
         var e, n, t;
+<<<<<<< Updated upstream
         return event.preventDefault(), e = document.getElementById("api_channel").value, n = document.getElementById("api_key").value, t = document.getElementById("secret_key").value, "live" == e ? l(n, t) : "sandbox" == e ? s(n, t) : (alert("Geçersiz istek."), !1)
+=======
+        return event.preventDefault(), e = document.getElementById("api_channel").value, n = document.getElementById("api_key").value, t = document.getElementById("api_key").value, "live" == e ? l(n, t) : "sandbox" == e ? s(n, t) : (alert("Geçersiz istek."), !1)
+>>>>>>> Stashed changes
     }
 
     function l(e, n) {

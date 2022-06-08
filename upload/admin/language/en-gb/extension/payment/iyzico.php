@@ -13,6 +13,7 @@ $_['secret_key']            			= 'Secret Key';
 $_['apikey_field_tooltip']          	= 'Your API key with including 32 digit letter and number.';
 $_['secretkey_field_tooltip']       	= 'Your Secret Key with including 32 digit letter and number.';
 $_['view_select']           			= 'Design';
+$_['payment_iyzico_language_name']           			= 'Checkout language';
 $_['order_status']          			= 'Order Status';
 $_['cancel_order_status']   			= 'Cancel Order Status';
 $_['order_status_tooltip']          	= 'New ordering status info';
@@ -59,4 +60,12 @@ $_['iyzico_webhook_url_key_error']      = "Webhook URL Error! Please, try these 
 $_['pwi_status_error']                  = "Pay with iyzico module is not enable!";
 $_['pwi_status_error_detail']           = "You can not access Settings of iyzico Checkout Form Module without installing the pay with iyzico module.";
 $_['dev_iyzipay_opencart_link']         = "https://dev.iyzipay.com/tr/acik-kaynak/opencart";
+<<<<<<< Updated upstream
 $_['dev_iyzipay_detail']                = "Complete the installation of the Opencart 3.x - Pay with iyzico module via dev.iyzipay:";
+=======
+$_['dev_iyzipay_detail']                = "Complete the installation of the Opencart 3.x - Pay with iyzico module via dev.iyzipay:";
+
+$_['checkout_language_automatic']   = 'Automatic';
+$_['checkout_language_turkish']     = 'Turkish';
+$_['checkout_language_english']     = 'English';
+>>>>>>> Stashed changes
