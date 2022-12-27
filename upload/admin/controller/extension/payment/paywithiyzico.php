@@ -2,8 +2,8 @@
 
 class ControllerExtensionPaymentPaywithiyzico extends Controller {
 
-    private $module_version      = '1.5';
-    private $module_product_name = 'eleven-1.5';
+    private $module_version      = '1.6';
+    private $module_product_name = 'eleven-1.6';
 
     private $error = array();
 

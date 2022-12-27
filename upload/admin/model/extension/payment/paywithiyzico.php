@@ -1,7 +1,7 @@
 <?php
 class ModelExtensionPaymentPaywithiyzico extends Model {
     private $module_version 	 = VERSION;
-    private $module_product_name = 'eleven-1.5';
+    private $module_product_name = 'eleven-1.6';
 
 
     public function install() {

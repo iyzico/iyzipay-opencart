@@ -14,7 +14,11 @@
 
 <div class="successPayment">
 {% if locale =='tr'%}
-  <h1>Ödemeniz Alındı. </h1>
+{% if credit_pending == '1'%}
+    <h1> Alışveriş Kredisi için başvurunuz alınmıştır. Başvurunuz, en kısa sürede sonuçlandırılacaktır.</h1>
+        {% else %}
+      <h1>Ödemeniz Alındı. </h1>
+        {% endif %}
 {% else %}
   <h1>Your Payment Received. </h1>
 {% endif %}

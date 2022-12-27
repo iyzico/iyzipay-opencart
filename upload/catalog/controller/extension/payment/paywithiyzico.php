@@ -2,7 +2,7 @@
 
 class ControllerExtensionPaymentPaywithiyzico extends Controller {
     private $module_version      = VERSION;
-    private $module_product_name = 'eleven-1.5';
+    private $module_product_name = 'eleven-1.6';
 
 
     private function setcookieSameSite($name, $value, $expire, $path, $domain, $secure, $httponly) {
@@ -267,10 +267,20 @@ class ControllerExtensionPaymentPaywithiyzico extends Controller {
             } else {
                 $this->model_checkout_order->addOrderHistory($paywithiyzico_local_order->order_id, $this->config->get('payment_paywithiyzico_order_status'), $message);
             }
+            $this->setWebhookText(0);
 
             return $this->response->redirect($this->url->link('extension/payment/paywithiyzico/successpage'));
 
         } catch (Exception $e) {
+
+          if($request_response->paymentStatus == 'PENDING_CREDIT' && $request_response->status == 'success')
+          {
+            $orderMessage = 'Alışveriş kredisi işlemi başlatıldı.';
+            $this->model_checkout_order->addOrderHistory($paywithiyzico_local_order->order_id, 1, $orderMessage);
+            $this->setWebhookText(1);
+            return $this->response->redirect($this->url->link('extension/payment/iyzico/successpage'));
+          }
+          $this->setWebhookText(0);
 
             $errorMessage = isset($request_response->errorMessage) ? $request_response->errorMessage : $e->getMessage();
 
@@ -437,6 +447,8 @@ class ControllerExtensionPaymentPaywithiyzico extends Controller {
           $locale  			 = $str_language;
         }
         $data['locale'] = $locale;
+        $thankyouText = $this->config->get('payment_iyzico_webhook_text');
+        $data['credit_pending'] = $thankyouText;
 
         $data['column_left'] = $this->load->controller('common/column_left');
         $data['column_right'] = $this->load->controller('common/column_right');
@@ -541,7 +553,7 @@ class ControllerExtensionPaymentPaywithiyzico extends Controller {
         return $ip_address;
     }
 
-    public function injectPwiLogoCss($route, &$data = false, &$output) {
+    public function injectPwiLogoCss($route, &$data = false, &$output=null) {
 
         $hook = '</footer>';
         $js   = "<style> div#account-order img{
@@ -551,5 +563,14 @@ class ControllerExtensionPaymentPaywithiyzico extends Controller {
 
         $output = str_replace($hook,$js,$output);
     }
+
+    public function setWebhookText($thankyouTextValue) {
+
+    $webhookText = $this->config->get('payment_iyzico_webhook_text');
+    $query = $this->db->query("UPDATE `" . DB_PREFIX . "setting` SET `value` = '".$thankyouTextValue."' , `serialized` = 0  WHERE `code` = 'payment_iyzico_webhook' AND `key` = 'payment_iyzico_webhook_text' AND `store_id` = '0'");
+    return $query;
+  }
+
+
 
 }
