@@ -45,7 +45,11 @@
                                         <br>
                                     {% endif  %}
                                     {% if iyzico_webhook_url_key %}
-                                        <strong>Webhook URL: </strong> {{iyzico_webhook_url}}
+                                        <strong>Webhook URL: </strong> {{iyzico_webhook_url}}<br>
+                                        {% if iyzico_webhook_button == 2 %}
+                                            <input type="hidden" class="form-control" id="active_button" value="0" name="payment_iyzico_webhook_active_button" placeholder="{{ iyzico_webhook_button }}" />
+                                            <button type="submit"  data-toggle="tooltip"  class="btn btn-primary">Aktifleştir</button> {{webhook_button_text}} <a href="mailto:entegrasyon@iyzico.com">entegrasyon@iyzico.com</a>
+                                              {% endif  %}
                                         <br>
                                         {{ webhook_url_description }}
                                     {% else  %}
@@ -398,8 +402,6 @@
                                 </div>
                             {% elseif locale == 'en' %}
 
-<<<<<<< Updated upstream
-=======
                             <div class="accordionBox">What is Live  and Sandbox   ?</div>
 					<div class="panelBox">
 					    <p><stong>Live</stong> and <strong>Sandbox</strong> reflects the type of API you will use.</p>
@@ -424,7 +426,7 @@
 					    </ul>
 					    <p>When your customers come to the payment step, it provides the mobile and web compatible Iyzico payment form, which covers the entire screen transparently.</p>
 					</div>
-				
+
 					<div class="accordionBox">What is the Note Connection error ?</div>
 					<div class="panelBox">
 					    <ul>
@@ -444,7 +446,6 @@
 				</p>
 
 
->>>>>>> Stashed changes
                             {% endif %}
 
 
@@ -472,21 +473,17 @@
     }
 
     function getApiValid() {
-        var e, n, t;
-<<<<<<< Updated upstream
-        return event.preventDefault(), e = document.getElementById("api_channel").value, n = document.getElementById("api_key").value, t = document.getElementById("secret_key").value, "live" == e ? l(n, t) : "sandbox" == e ? s(n, t) : (alert("Geçersiz istek."), !1)
-=======
-        return event.preventDefault(), e = document.getElementById("api_channel").value, n = document.getElementById("api_key").value, t = document.getElementById("api_key").value, "live" == e ? l(n, t) : "sandbox" == e ? s(n, t) : (alert("Geçersiz istek."), !1)
->>>>>>> Stashed changes
-    }
+          var e, n, t;
+          return event.preventDefault(), e = document.getElementById("api_channel").value, n = document.getElementById("api_key").value, t = document.getElementById("api_key").value, "live" == e ? l(n, t) : "sandbox" == e ? s(n, t) : (alert("Geçersiz istek."), !1)
+      }
 
-    function l(e, n) {
-        if ("sandbox-" == e.substring(0, 8) || "sandbox-" == n.substring(0, 8)) return alert("{{valid_live}}"), !1
-    }
+      function l(e, n) {
+          if ("sandbox-" == e.substring(0, 8) || "sandbox-" == n.substring(0, 8)) return alert("{{valid_live}}"), !1
+      }
 
-    function s(e, n) {
-        if ("sandbox-" != e.substring(0, 8) || "sandbox-" != n.substring(0, 8)) return alert("{{valid_sandbox}}"), !1
-    }
+      function s(e, n) {
+          if ("sandbox-" != e.substring(0, 8) || "sandbox-" != n.substring(0, 8)) return alert("{{valid_sandbox}}"), !1
+      }
 
 </script>
 <style>

@@ -3,25 +3,25 @@ class ModelExtensionPaymentIyzico extends Model {
 
     public function install() {
         $this->db->query("
-			CREATE TABLE IF NOT EXISTS `" . DB_PREFIX . "iyzico_order` (
-			  `iyzico_order_id` INT(11) NOT NULL AUTO_INCREMENT,
-			  `payment_id` INT(11) NOT NULL,
-			  `order_id` INT(11) NOT NULL,
-			  `total_amount` DECIMAL( 10, 2 ) NOT NULL,
-			  `status` VARCHAR(20) NOT NULL,
-			  `created_at`  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-			  PRIMARY KEY (`iyzico_order_id`)
-			) ENGINE=MyISAM DEFAULT COLLATE=utf8_general_ci;");
+            CREATE TABLE IF NOT EXISTS `" . DB_PREFIX . "iyzico_order` (
+              `iyzico_order_id` INT(11) NOT NULL AUTO_INCREMENT,
+              `payment_id` INT(11) NOT NULL,
+              `order_id` INT(11) NOT NULL,
+              `total_amount` DECIMAL( 10, 2 ) NOT NULL,
+              `status` VARCHAR(20) NOT NULL,
+              `created_at`  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+              PRIMARY KEY (`iyzico_order_id`)
+            ) ENGINE=MyISAM DEFAULT COLLATE=utf8_general_ci;");
 
         $this->db->query("
-			CREATE TABLE IF NOT EXISTS `" . DB_PREFIX . "iyzico_card` (
-			  	`iyzico_card_id` INT(11) NOT NULL AUTO_INCREMENT,
-			  	`customer_id` INT(11) NOT NULL,
-				`card_user_key` VARCHAR(50),
-				`api_key` VARCHAR(50),
-			  	`created_at`  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-			  	PRIMARY KEY (`iyzico_card_id`)
-			) ENGINE=MyISAM DEFAULT COLLATE=utf8_general_ci;");
+            CREATE TABLE IF NOT EXISTS `" . DB_PREFIX . "iyzico_card` (
+                `iyzico_card_id` INT(11) NOT NULL AUTO_INCREMENT,
+                `customer_id` INT(11) NOT NULL,
+                `card_user_key` VARCHAR(50),
+                `api_key` VARCHAR(50),
+                `created_at`  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                PRIMARY KEY (`iyzico_card_id`)
+            ) ENGINE=MyISAM DEFAULT COLLATE=utf8_general_ci;");
     }
 
     public function uninstall() {
@@ -38,7 +38,7 @@ class ModelExtensionPaymentIyzico extends Model {
                 $name = str_replace("'", "", $name);
                 $pki_value .= $name."=[";
                 $end_key = count(get_object_vars($data));
-                $count 	 = 0;
+                $count   = 0;
                 foreach ($data as $key => $value) {
                     $count++;
                     $name = var_export($key, true);
@@ -53,7 +53,7 @@ class ModelExtensionPaymentIyzico extends Model {
                 $name = str_replace("'", "", $name);
                 $pki_value .= $name."=[";
                 $end_key = count($data);
-                $count 	 = 0;
+                $count   = 0;
                 foreach ($data as $key => $result) {
                     $count++;
                     $pki_value .= "[";
@@ -94,15 +94,15 @@ class ModelExtensionPaymentIyzico extends Model {
 
     public function authorizationGenerate($api_key,$secret_key,$pki) {
 
-        $rand_value	= rand(100000,99999999);
+        $rand_value = rand(100000,99999999);
         $hash_value = $api_key.$rand_value.$secret_key.$pki;
-        $hash 		= base64_encode(sha1($hash_value,true));
+        $hash       = base64_encode(sha1($hash_value,true));
 
-        $authorization 	= 'IYZWS '.$api_key.':'.$hash;
+        $authorization  = 'IYZWS '.$api_key.':'.$hash;
 
         $authorization_data = array(
             'authorization' => $authorization,
-            'rand_value' 	=> $rand_value
+            'rand_value'    => $rand_value
         );
 
         return $authorization_data;
@@ -110,12 +110,22 @@ class ModelExtensionPaymentIyzico extends Model {
 
     public function apiConnection($authorization_data,$api_connection_object) {
 
-        $url 		= $this->config->get('payment_iyzico_api_url');
-        $url 		= $url.'/payment/bin/check';
+        $url        = $this->config->get('payment_iyzico_api_url');
+        $url        = $url.'/payment/bin/check';
 
         $api_connection_object = json_encode($api_connection_object);
 
         return $this->curlPost($api_connection_object,$authorization_data,$url);
+
+    }
+    public function iyzicoPostWebhookUrlKey($authorization_data,$webhook_active_post) {
+
+        $url        = $this->config->get('payment_iyzico_api_url');
+        $url        = $url.'/payment/notification/update';
+
+        $webhook_active_post = json_encode($webhook_active_post);
+
+        return $this->curlPost($webhook_active_post,$authorization_data,$url);
 
     }
 

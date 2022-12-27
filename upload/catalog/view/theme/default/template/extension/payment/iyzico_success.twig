@@ -13,30 +13,12 @@
       <div class="table-responsive">
 
         <div class="successPayment" style="padding-top: 20px;">
-<<<<<<< Updated upstream
-          <h1>Ödemeniz Alındı. </h1>
-          <div>
-            <img src="{{success_icon}}" width="64" height="64" />
-          </div>
-        </div>
-        <br>
-        <br>
-        <div class="orderDetail">
-          <table class="table table-bordered table-hover">
-            <thead>
-            <tr>
-              <td class="text-left">{{ column_name }}</td>
-              <td class="text-left">{{ column_model }}</td>
-              <td class="text-right">{{ column_quantity }}</td>
-              <td class="text-right">{{ column_price }}</td>
-              <td class="text-right">{{ column_total }}</td>
-            </tr>
-            </thead>
-            <tbody>
-
-=======
         {% if locale == 'tr'%}
-          <h1>Ödemeniz Alındı. </h1>
+            {% if credit_pending == '1'%}
+            <h2> Alışveriş Kredisi için başvurunuz alınmıştır. Başvurunuz, en kısa sürede sonuçlandırılacaktır.</h2>
+              {% else %}
+                    <h1>Ödemeniz Alındı. </h1>
+              {% endif %}
         {% else %}
           <h1>Your Payment Received. </h1>
         {% endif %}
@@ -60,7 +42,6 @@
             </thead>
             <tbody>
 
->>>>>>> Stashed changes
             {% for product in products %}
               <tr>
                 <td class="text-left"><a href="{{ product.href }}">{{ product.name }}</a> {% for option in product.option %} <br />

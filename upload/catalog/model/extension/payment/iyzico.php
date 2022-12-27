@@ -6,8 +6,8 @@ class ModelExtensionPaymentIyzico extends Model {
 
         $payment_iyzico_geo_zone_id = $this->config->get('payment_iyzico_geo_zone_id');
         $payment_iyzico_geo_zone_id = $this->db->escape($payment_iyzico_geo_zone_id);
-        $address_country_id 		= $this->db->escape($address['country_id']);
-        $address_zone_id 			= $this->db->escape($address['zone_id']);
+        $address_country_id         = $this->db->escape($address['country_id']);
+        $address_zone_id            = $this->db->escape($address['zone_id']);
 
         $query = $this->db->query("SELECT * FROM `" . DB_PREFIX . "zone_to_geo_zone` WHERE `geo_zone_id` = '" . $payment_iyzico_geo_zone_id . "' AND `country_id` = '" . $address_country_id . "' AND (`zone_id` = '" . $address_zone_id . "' OR `zone_id` = '0')");
 
@@ -40,18 +40,15 @@ class ModelExtensionPaymentIyzico extends Model {
     private function iyzicoMultipLangTitle($title) {
 
         $this->load->language('extension/payment/iyzico');
-<<<<<<< Updated upstream
-=======
         $language = $this->config->get('payment_iyzico_language');
         $str_language = mb_strtolower($language);
 
         if(empty($str_language) or $str_language == 'null')
         {
-            $title_language 			 = $this->language->get('code');
+            $title_language              = $this->language->get('code');
         }else {
-            $title_language 			 = $str_language;
+            $title_language              = $str_language;
         }
->>>>>>> Stashed changes
 
         if($title) {
 
@@ -62,11 +59,7 @@ class ModelExtensionPaymentIyzico extends Model {
                 foreach ($parser as $key => $parse) {
                     $result = explode('=',$parse);
 
-<<<<<<< Updated upstream
-                    if($this->language->get('code') == $result[0]) {
-=======
                     if($title_language == $result[0]) {
->>>>>>> Stashed changes
                         $new_title = $result[1];
                         break;
                     }
@@ -86,13 +79,13 @@ class ModelExtensionPaymentIyzico extends Model {
     public function authorizationGenerate($pki,$api_key,$secret_key,$rand_value) {
 
         $hash_value = $api_key.$rand_value.$secret_key.$pki;
-        $hash 		= base64_encode(sha1($hash_value,true));
+        $hash       = base64_encode(sha1($hash_value,true));
 
-        $authorization 	= 'IYZWS '.$api_key.':'.$hash;
+        $authorization  = 'IYZWS '.$api_key.':'.$hash;
 
         $authorization_data = array(
             'authorization' => $authorization,
-            'rand_value' 	=> $rand_value
+            'rand_value'    => $rand_value
         );
 
         return $authorization_data;
@@ -104,11 +97,11 @@ class ModelExtensionPaymentIyzico extends Model {
 
         $form_object = new stdClass();
 
-        $form_object->locale 						= $object_data->locale;
-        $form_object->conversationId 				= $object_data->conversationId;
-        $form_object->price 						= $object_data->price;
-        $form_object->basketId 						= $object_data->basketId;
-        $form_object->paymentGroup 					= $object_data->paymentGroup;
+        $form_object->locale                        = $object_data->locale;
+        $form_object->conversationId                = $object_data->conversationId;
+        $form_object->price                         = $object_data->price;
+        $form_object->basketId                      = $object_data->basketId;
+        $form_object->paymentGroup                  = $object_data->paymentGroup;
 
         $form_object->buyer = new stdClass();
         $form_object->buyer = $object_data->buyer;
@@ -126,12 +119,12 @@ class ModelExtensionPaymentIyzico extends Model {
 
         }
 
-        $form_object->callbackUrl 			= $object_data->callbackUrl;
-        $form_object->paymentSource 		= $object_data->paymentSource;
-        $form_object->currency 	  			= $object_data->currency;
-        $form_object->paidPrice   			= $object_data->paidPrice;
-        $form_object->forceThreeDS 			= $object_data->forceThreeDS;
-        $form_object->cardUserKey 			= $object_data->cardUserKey;
+        $form_object->callbackUrl           = $object_data->callbackUrl;
+        $form_object->paymentSource         = $object_data->paymentSource;
+        $form_object->currency              = $object_data->currency;
+        $form_object->paidPrice             = $object_data->paidPrice;
+        $form_object->forceThreeDS          = $object_data->forceThreeDS;
+        $form_object->cardUserKey           = $object_data->cardUserKey;
 
         return $form_object;
     }
@@ -145,7 +138,7 @@ class ModelExtensionPaymentIyzico extends Model {
                 $name = str_replace("'", "", $name);
                 $pki_value .= $name."=[";
                 $end_key = count(get_object_vars($data));
-                $count 	 = 0;
+                $count   = 0;
                 foreach ($data as $key => $value) {
                     $count++;
                     $name = var_export($key, true);
@@ -160,7 +153,7 @@ class ModelExtensionPaymentIyzico extends Model {
                 $name = str_replace("'", "", $name);
                 $pki_value .= $name."=[";
                 $end_key = count($data);
-                $count 	 = 0;
+                $count   = 0;
                 foreach ($data as $key => $result) {
                     $count++;
                     $pki_value .= "[";
@@ -262,43 +255,18 @@ class ModelExtensionPaymentIyzico extends Model {
 
     public function insertCardUserKey($customer_id,$card_user_key,$api_key) {
 
-<<<<<<< Updated upstream
-        $insertCard = $this->db->query("INSERT INTO `" . DB_PREFIX . "iyzico_card` SET 
-=======
         $insertCard = $this->db->query("INSERT INTO `" . DB_PREFIX . "iyzico_card` SET
->>>>>>> Stashed changes
-			`customer_id` 	= '" . $this->db->escape($customer_id) . "',
-			`card_user_key` = '" . $this->db->escape($card_user_key) . "',
-			`api_key` 		= '" . $this->db->escape($api_key) . "'");
+            `customer_id`   = '" . $this->db->escape($customer_id) . "',
+            `card_user_key` = '" . $this->db->escape($card_user_key) . "',
+            `api_key`       = '" . $this->db->escape($api_key) . "'");
 
         return $insertCard;
     }
-<<<<<<< Updated upstream
 
     public function findUserCardKey($customer_id,$api_key) {
 
         $customer_id = $this->db->escape($customer_id);
-        $api_key 	 = $this->db->escape($api_key);
-
-        $card_user_key = (object) $this->db->query("SELECT card_user_key FROM " . DB_PREFIX . "iyzico_card WHERE customer_id = '" . $customer_id ."' and api_key = '".$api_key."' ORDER BY iyzico_card_id DESC");
-
-        if(count($card_user_key->rows)) {
-
-            return $card_user_key->rows[0]['card_user_key'];
-        }
-
-        return '';
-    }
-
-    public function insertIyzicoOrder($order) {
-
-        $insertOrder = $this->db->query("INSERT INTO `" . DB_PREFIX . "iyzico_order` SET 
-=======
-
-    public function findUserCardKey($customer_id,$api_key) {
-
-        $customer_id = $this->db->escape($customer_id);
-        $api_key 	 = $this->db->escape($api_key);
+        $api_key     = $this->db->escape($api_key);
 
         $card_user_key = (object) $this->db->query("SELECT card_user_key FROM " . DB_PREFIX . "iyzico_card WHERE customer_id = '" . $customer_id ."' and api_key = '".$api_key."' ORDER BY iyzico_card_id DESC");
 
@@ -313,20 +281,19 @@ class ModelExtensionPaymentIyzico extends Model {
     public function insertIyzicoOrder($order) {
 
         $insertOrder = $this->db->query("INSERT INTO `" . DB_PREFIX . "iyzico_order` SET
->>>>>>> Stashed changes
-			`payment_id` = '" . $this->db->escape($order->payment_id) . "',
-			`order_id` = '" . $this->db->escape($order->order_id) . "',
-			`total_amount` = '" . $this->db->escape($order->total_amount) . "',
-			`status` = '" . $this->db->escape($order->status) . "'");
+            `payment_id` = '" . $this->db->escape($order->payment_id) . "',
+            `order_id` = '" . $this->db->escape($order->order_id) . "',
+            `total_amount` = '" . $this->db->escape($order->total_amount) . "',
+            `status` = '" . $this->db->escape($order->status) . "'");
 
         return $insertOrder;
     }
 
     public function orderUpdateByInstallement($order_id,$paidPrice) {
 
-        $order_id 		 = $this->db->escape($order_id);
+        $order_id        = $this->db->escape($order_id);
 
-        $order_info 	 = $this->model_checkout_order->getOrder($order_id);
+        $order_info      = $this->model_checkout_order->getOrder($order_id);
 
         $this->load->language('extension/payment/iyzico');
 
@@ -375,7 +342,7 @@ class ModelExtensionPaymentIyzico extends Model {
 
             $category_id = $this->db->escape($query->rows[0]['category_id']);
 
-            $category 	 = $this->db->query("SELECT name FROM " . DB_PREFIX . "category_description WHERE category_id = '" . $category_id . "' LIMIT 1");
+            $category    = $this->db->query("SELECT name FROM " . DB_PREFIX . "category_description WHERE category_id = '" . $category_id . "' LIMIT 1");
 
             if($category->rows[0]['name']) {
                 $category_name = $category->rows[0]['name'];

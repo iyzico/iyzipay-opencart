@@ -1,10 +1,6 @@
 <?php
 class ControllerExtensionPaymentIyzico extends Controller {
-<<<<<<< Updated upstream
-    private $module_version      = '2.1';
-=======
-    private $module_version      = '2.3';
->>>>>>> Stashed changes
+    private $module_version      = '2.4';
 
     private $error = array();
 
@@ -17,6 +13,7 @@ class ControllerExtensionPaymentIyzico extends Controller {
             'validateField' => 'blank',
             'name'          => 'payment_iyzico_api_url',
         ),
+
         array(
             'validateField' => 'error_api_key',
             'name'          => 'payment_iyzico_api_key',
@@ -82,6 +79,8 @@ class ControllerExtensionPaymentIyzico extends Controller {
         $this->load->model('user/user');
         $this->load->model('extension/payment/iyzico');
 
+
+
         if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validate()) {
 
             $request            = $this->requestIyzico($this->request->post,'add','');
@@ -97,13 +96,21 @@ class ControllerExtensionPaymentIyzico extends Controller {
 
             $this->model_setting_setting->editSetting('payment_iyzico',$request);
 
-            $this->getApiConnection($request['payment_iyzico_api_key'],$request['payment_iyzico_secret_key']);
+            $this->model_setting_setting->editSetting('payment_iyzico_webhook',$request);
 
+            $this->getApiConnection($request['payment_iyzico_api_key'],$request['payment_iyzico_secret_key']);
 
             $this->response->redirect($this->url->link('extension/payment/iyzico', 'user_token=' . $this->session->data['user_token'] . '&type=payment', true));
         }
 
         $this->setIyziWebhookUrlKey();
+
+        $this->setIyziWebhookUrlActiveButton();
+
+        $this->setIyziWebhookUrlText();
+
+        $this->setWebhookUpdate();
+
 
         foreach ($this->fields as $key => $field) {
 
@@ -151,6 +158,7 @@ class ControllerExtensionPaymentIyzico extends Controller {
         $data['iyzico_webhook_url_key'] = $this->config->get('webhook_iyzico_webhook_url_key');
         $data['iyzico_webhook_url']  = HTTPS_CATALOG.'index.php?route=extension/payment/iyzico/webhook&key=' .$this->config->get('webhook_iyzico_webhook_url_key');
         $data['module_version'] = $this->module_version;
+        $data['iyzico_webhook_button'] = $this->config->get('payment_iyzico_webhook_active_button');
 
         $pwi_status    = $this->config->get('payment_paywithiyzico_status');
         $pwi_status_after_enabled_pwi = $this->config->get('payment_iyzico_pwi_first_enabled_status');
@@ -171,6 +179,39 @@ class ControllerExtensionPaymentIyzico extends Controller {
             $this->response->setOutput($this->load->view('extension/payment/iyzico', $data));
         }
     }
+
+    private function setWebhookUpdate() {
+
+      $webhookActive = $this->config->get('payment_iyzico_webhook_active_button');
+      $api_key = $this->config->get('payment_iyzico_api_key');
+      $secret_key = $this->config->get('payment_iyzico_secret_key');
+
+      if(isset($api_key) && isset($secret_key) && isset($_SERVER['HTTPS']))
+      {
+        if($webhookActive == 0)
+        {
+          $webhook_active_post = new stdClass();
+          $webhook_active_post->webhookUrl      = HTTPS_CATALOG.'index.php?route=extension/payment/iyzico/webhook&key=' .$this->config->get('webhook_iyzico_webhook_url_key');
+
+          $webhook_active_pki        = $this->model_extension_payment_iyzico->pkiStringGenerate($webhook_active_post);
+          $authorization_data        = $this->model_extension_payment_iyzico->authorizationGenerate($api_key,$secret_key,$webhook_active_pki);
+          $requestResponseWebhook    = $this->model_extension_payment_iyzico->iyzicoPostWebhookUrlKey($authorization_data,$webhook_active_post);
+
+
+          if($requestResponseWebhook->merchantNotificationUpdateStatus == 'UPDATED' || $requestResponseWebhook->merchantNotificationUpdateStatus == 'CREATED')
+          {
+            $this->model_setting_setting->editSetting('payment_iyzico_webhook',array(
+                "payment_iyzico_webhook_active_button" => 1 ));
+          }
+          else {
+            $this->model_setting_setting->editSetting('payment_iyzico_webhook',array(
+                "payment_iyzico_webhook_active_button" => 2 ));
+          }
+
+        }
+      }
+    }
+
 
     private function getApiConnection($api_key,$secret_key) {
 
@@ -259,12 +300,17 @@ class ControllerExtensionPaymentIyzico extends Controller {
         $this->model_extension_payment_iyzico->install();
         $this->model_setting_event->addEvent('overlay_script', 'catalog/controller/common/footer/after', 'extension/payment/iyzico/injectOverlayScript');
         $this->model_setting_event->addEvent('module_notification', 'admin/controller/common/footer/after', 'extension/payment/iyzico/injectModuleNotification');
+        $this->setWebhookUpdate();
+
+
+
     }
 
     public function uninstall() {
 
         $this->load->model('extension/payment/iyzico');
         $this->db->query("DELETE FROM " . DB_PREFIX . "setting WHERE store_id = '0' AND code = 'payment_iyzico_pwi_status'");
+        $this->db->query("DELETE FROM " . DB_PREFIX . "setting WHERE store_id = '0' AND code = 'payment_iyzico_webhook'");
         $this->model_extension_payment_iyzico->uninstall();
         $this->model_setting_event->deleteEventByCode('overlay_script');
         $this->model_setting_event->deleteEventByCode('module_notification');
@@ -315,9 +361,10 @@ class ControllerExtensionPaymentIyzico extends Controller {
             } else if($request_modify['payment_iyzico_api_channel'] == 'sandbox') {
 
                 $request_modify['payment_iyzico_api_url'] = 'https://sandbox-api.iyzipay.com';
-                
+
 
             }
+
 
 
             if(!$request_modify['payment_iyzico_overlay_status']) {
@@ -349,7 +396,6 @@ class ControllerExtensionPaymentIyzico extends Controller {
     {
 
         $webhookUrl = $this->config->get('webhook_iyzico_webhook_url_key');
-<<<<<<< Updated upstream
 
         $uniqueUrlId = substr(base64_encode(time() . mt_rand()),15,6);
 
@@ -362,20 +408,31 @@ class ControllerExtensionPaymentIyzico extends Controller {
         return true;
     }
 
-=======
 
-        $uniqueUrlId = substr(base64_encode(time() . mt_rand()),15,6);
+    private function setIyziWebhookUrlActiveButton()
+    {
+        $webhookActive = $this->config->get('payment_iyzico_webhook_active_button');
+        if(!isset($webhookActive))
+        {
+          $this->db->query("INSERT INTO `" . DB_PREFIX . "setting` (`code`, `key`, `value`, `serialized`) VALUES ('payment_iyzico_webhook','payment_iyzico_webhook_active_button', '0' ,'0');");
 
-        if (!$webhookUrl) {
-            $this->model_setting_setting->editSetting('webhook_iyzico',array(
-                "webhook_iyzico_webhook_url_key" => $uniqueUrlId
-            ));
         }
 
-        return true;
+
+    }
+    private function setIyziWebhookUrlText()
+    {
+        $webhookText = $this->config->get('payment_iyzico_webhook_text');
+        if(!isset($webhookText))
+        {
+          $this->db->query("INSERT INTO `" . DB_PREFIX . "setting` (`code`, `key`, `value`, `serialized`) VALUES ('payment_iyzico_webhook','payment_iyzico_webhook_text','0' ,'0');");
+
+        }
+
     }
 
->>>>>>> Stashed changes
+
+
     //if pwi enabled, set pwi_status key in setting table
     private function setPWIModuleFirstStatus($pwiStatus)
     {

@@ -60,12 +60,10 @@ $_['iyzico_webhook_url_key_error']      = "Webhook URL Error! Please, try these 
 $_['pwi_status_error']                  = "Pay with iyzico module is not enable!";
 $_['pwi_status_error_detail']           = "You can not access Settings of iyzico Checkout Form Module without installing the pay with iyzico module.";
 $_['dev_iyzipay_opencart_link']         = "https://dev.iyzipay.com/tr/acik-kaynak/opencart";
-<<<<<<< Updated upstream
-$_['dev_iyzipay_detail']                = "Complete the installation of the Opencart 3.x - Pay with iyzico module via dev.iyzipay:";
-=======
 $_['dev_iyzipay_detail']                = "Complete the installation of the Opencart 3.x - Pay with iyzico module via dev.iyzipay:";
 
 $_['checkout_language_automatic']   = 'Automatic';
 $_['checkout_language_turkish']     = 'Turkish';
 $_['checkout_language_english']     = 'English';
->>>>>>> Stashed changes
+
+$_['webhook_button_text']           = "If you are having problems, please contact to activate the iyzico webhook system.";
