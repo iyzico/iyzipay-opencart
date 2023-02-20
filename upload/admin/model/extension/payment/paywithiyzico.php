@@ -1,7 +1,7 @@
 <?php
 class ModelExtensionPaymentPaywithiyzico extends Model {
     private $module_version 	 = VERSION;
-    private $module_product_name = 'eleven-1.6';
+    private $module_product_name = 'eleven-1.7';
 
 
     public function install() {
@@ -144,7 +144,7 @@ class ModelExtensionPaymentPaywithiyzico extends Model {
         }
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 0);
-        curl_setopt($curl, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_0);
+        curl_setopt($curl, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_NONE);
         curl_setopt($curl, CURLOPT_TIMEOUT, 10);
 
         curl_setopt(
