@@ -4,7 +4,7 @@ error_reporting(0);
 //Opencart2.3v
 class ControllerExtensionPaymentPaywithiyzico extends Controller {
 
-    private $module_version = "1.0.0";
+    private $module_version = "1.1.0";
     private $module_product_name = "eleven";
 
     public function index()
