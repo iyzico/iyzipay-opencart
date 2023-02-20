@@ -1,6 +1,6 @@
 <?php
 class ControllerExtensionPaymentIyzico extends Controller {
-    private $module_version      = '2.4';
+    private $module_version      = '2.5';
 
     private $error = array();
 

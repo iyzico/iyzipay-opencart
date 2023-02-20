@@ -151,7 +151,7 @@ class ModelExtensionPaymentIyzico extends Model {
         }
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 0);
-        curl_setopt($curl, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_0);
+        curl_setopt($curl, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_NONE);
         curl_setopt($curl, CURLOPT_TIMEOUT, 10);
 
         curl_setopt(

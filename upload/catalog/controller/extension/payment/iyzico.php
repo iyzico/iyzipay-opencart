@@ -2,7 +2,7 @@
 class ControllerExtensionPaymentIyzico extends Controller {
 
     private $module_version      = VERSION;
-    private $module_product_name = 'eleven-2.4';
+    private $module_product_name = 'eleven-2.5';
 
     private $paymentConversationId;
     private $webhookToken;
@@ -250,7 +250,7 @@ class ControllerExtensionPaymentIyzico extends Controller {
 
             if($webhook == "webhook" )
             {
-            
+
               $order_id = $request_response->basketId;
               $order_info            = $this->model_checkout_order->getOrder($order_id);
 
