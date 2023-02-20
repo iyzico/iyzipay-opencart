@@ -181,7 +181,7 @@ class ModelPaymentIyzico extends Model {
         }
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 0);
-        curl_setopt($curl, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_0);
+        curl_setopt($curl, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_NONE);
         curl_setopt($curl, CURLOPT_TIMEOUT, 150);
 
         curl_setopt(
@@ -203,7 +203,7 @@ class ModelPaymentIyzico extends Model {
 
     public function insertCardUserKey($customer_id,$card_user_key,$api_key) {
 
-        $insertCard = $this->db->query("INSERT INTO `" . DB_PREFIX . "iyzico_card` SET 
+        $insertCard = $this->db->query("INSERT INTO `" . DB_PREFIX . "iyzico_card` SET
 			`customer_id` 	= '" . $this->db->escape($customer_id) . "',
 			`card_user_key` = '" . $this->db->escape($card_user_key) . "',
 			`api_key` 		= '" . $this->db->escape($api_key) . "'");
@@ -228,9 +228,9 @@ class ModelPaymentIyzico extends Model {
 
     public function insertIyzicoOrder($order) {
 
-        $insertOrder = $this->db->query("INSERT INTO `" . DB_PREFIX . "iyzico_order` SET 
+        $insertOrder = $this->db->query("INSERT INTO `" . DB_PREFIX . "iyzico_order` SET
 			`payment_id` = '" . $this->db->escape($order->payment_id) . "',
-			`order_id` = '" . $this->db->escape($order->order_id) . "', 
+			`order_id` = '" . $this->db->escape($order->order_id) . "',
 			`total_amount` = '" . $this->db->escape($order->total_amount) . "',
 			`status` = '" . $this->db->escape($order->status) . "'");
 

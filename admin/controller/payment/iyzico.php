@@ -2,7 +2,7 @@
 
 class ControllerPaymentIyzico extends Controller {
 
-    private $module_version = "2.0.0";
+    private $module_version = "2.1.0";
     private $module_product_name = "FLAP";
 
     private $error = array();

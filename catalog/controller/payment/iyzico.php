@@ -3,7 +3,7 @@ error_reporting(0);
 
 //Opencart2.0v Only use for index function
 class ControllerPaymentIyzico extends Controller {
-    private $module_version = "2.0.0";
+    private $module_version = "2.1.0";
     private $module_product_name = "FLAP";
 
     public function index()

@@ -3,7 +3,7 @@ error_reporting(0);
 
 //Opencart2.3v and 2.0v are using Payment
 class ControllerExtensionPaymentIyzico extends Controller {
-    private $module_version = "2.0.0";
+    private $module_version = "2.1.0";
     private $module_product_name = "FLAP";
 
     public function index()
@@ -449,7 +449,7 @@ class ControllerExtensionPaymentIyzico extends Controller {
     		                left: 0;
     		                width: 100%;
                         }
-                    }	
+                    }
 	            </style><script> window.iyz = { token: '" . $token . "', position: '" . $overlay_status . "', ideaSoft: false, pwi:true};</script>
         <script src='https://static.iyzipay.com/buyer-protection/buyer-protection.js' type='text/javascript'></script></footer>";
 
