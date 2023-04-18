@@ -1,0 +1,234 @@
+{{ header }}{{ column_left }}
+<div id="content">
+
+    <div class="page-header">
+        <div class="container-fluid">
+            <div class="pull-right">
+                <button style="float:right;" type="submit" form="form-payment" data-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary"><i class="fa fa-save"></i></button>
+              <a href="{{ cancel }}" style="float:right;" data-bs-toggle="tooltip" title="" class="btn btn-light" data-bs-original-title="{{ button_cancel }}" aria-label="{{ button_cancel }}"><i class="fas fa-reply"></i></a>
+          </div>
+            <h1><i class="fa fa-credit-card"></i> {{ heading_title }}</h1>
+            <ul class="breadcrumb">
+                {% for breadcrumb in breadcrumbs %}
+                    <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <div class="container-fluid">
+    <div class="card">
+      <div class="card-header"><i class="fa-solid fa-pencil"></i> iyzico - opencart 4x  V. {{module_version}}</div>
+      <div class="card-body">
+        <div class="panel-body">
+            <form action="{{ action }}" method="post" enctype="multipart/form-data" id="form-payment" onsubmit="return getApiValid()" class="form-horizontal">
+            <div></div>
+                <div class="tab-content">
+                <div class="row mb-3">
+                {% if iyzico_webhook_button == 3 %}
+                 <div class="alert alert-info"><i class="fa-solid fa-circle-exclamation"></i>&nbsp;&nbsp;&nbsp;
+                    <input type="hidden" class="form-control" id="active_button" value="1" name="payment_iyzico_webhook_active_button" placeholder="{{ iyzico_webhook_button }}" />
+                    <button type="submit"  data-toggle="tooltip"  class="btn btn-primary">Aktifleştir</button> &nbsp;&nbsp;{{text_info_label}} </div>
+                      {% endif  %}
+                      </div>
+                    <div class="row mb-3">
+                      <label for="input-sort-order" class="col-sm-2 col-form-label" for="test">Webhook URL:</label>
+                      <div class="col-sm-10">
+                      <label for="input-sort-order" class="col-sm-14 col-form-label" for="test">{{ iyzico_webhook_url }}</label>
+                      </div>
+                    </div>
+                      <div class="row mb-3">
+                      <label for="input-approved-status" class="col-sm-2 col-form-label">{{ api_field }}</label>
+                      <div class="col-sm-10">
+                        <select name="payment_iyzico_api_channel" id="api_channel" class="form-select">
+                        {% if payment_iyzico_api_channel == 'live'  %}
+                            <option value="live" selected="selected">{{ live }}</option>
+                            <option value="sandbox">{{ sandbox }}</option>
+                        {% elseif payment_iyzico_api_channel == 'sandbox' %}
+                            <option value="live">{{ live }}</option>
+                            <option value="sandbox"  selected="selected">{{ sandbox }}</option>
+                        {% else   %}
+                            <option value="live">{{ live }}</option>
+                            <option value="sandbox">{{ sandbox }}</option>
+                        {%  endif %}
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="row mb-3">
+                      <label for="input-sort-order" class="col-sm-2 col-form-label" for="test">{{ api_key }}</label>
+                      <div class="col-sm-10">
+                        <input type="text" name="payment_iyzico_api_key" value="{{ payment_iyzico_api_key }}" placeholder="{{ api_key }}" id="api_key" class="form-control"/>
+                        {% if error_api_key %}
+                            <div class="text-danger">{{ error_api_key }}</div>
+                        {% endif %}
+                      </div>
+                    </div>
+                    <input type="hidden" name="payment_iyzico_webhook_text" value="{{ payment_iyzico_webhook_text }}" class="form-control"/>
+                    <div class="row mb-3">
+                      <label for="input-sort-order" class="col-sm-2 col-form-label" for="test">{{ secret_key }}</label>
+                      <div class="col-sm-10">
+                        <input type="text" name="payment_iyzico_secret_key" value="{{ payment_iyzico_secret_key }}" placeholder="{{ secret_key }}" id="secret_key" class="form-control"/>
+                        {% if error_secret_key %}
+                            <div class="text-danger">{{ error_secret_key }}</div>
+                        {% endif %}
+                      </div>
+                    </div>
+                    <div class="row mb-3">
+                      <label for="input-approved-status" class="col-sm-2 col-form-label" for="test">{{ view_select }}</label>
+                      <div class="col-sm-10">
+                        <select name="payment_iyzico_design"  class="form-select">
+                        <option value="">{{ general_select }}</option>
+                        {% if payment_iyzico_design == 'popup'  %}
+                            <option value="popup" selected="selected">Popup</option>
+                            <option value="responsive">Responsive</option>
+                        {% elseif payment_iyzico_design == 'responsive' %}
+                            <option value="popup">Popup</option>
+                            <option value="responsive" selected="selected">Responsive</option>
+                        {% else %}
+                            <option value="popup">Popup</option>
+                            <option value="responsive">Responsive</option>
+
+                        {% endif %}
+                        </select>
+                        {% if error_design %}
+                            <div class="text-danger">{{ error_design }}</div>
+                        {% endif %}
+                      </div>
+                    </div>
+
+                    <div class="row mb-3">
+                      <label for="input-sort-order" class="col-sm-2 col-form-label" for="test">{{ payment_title }}</label>
+                      <div class="col-sm-10">
+                      {% if payment_iyzico_title %}
+                          <input type="text" class="form-control"  value="{{payment_iyzico_title}}" name="payment_iyzico_title" placeholder="{{ payment_title }}" />
+                      {% else %}
+                          <input type="text" class="form-control"  value="tr=Kredi ve Banka Kartı|en=Credit and Bank Debit" name="payment_iyzico_title" placeholder="{{ payment_title }}" />
+                      {% endif %}
+                      </div>
+                    </div>
+
+                    <div class="row mb-3">
+                      <label for="input-approved-status" class="col-sm-2 col-form-label" for="test">{{ order_status }}</label>
+                      <div class="col-sm-10">
+                      <select class="form-control" name="payment_iyzico_order_status">
+                          {% for order_status in order_statuses %}
+                              {% if order_status.order_status_id == payment_iyzico_order_status %}
+                                  <option value="{{ order_status.order_status_id }}" selected="selected">{{ order_status.name }}</option>
+                              {% else %}
+                                  {% if payment_iyzico_order_status == false and order_status.order_status_id == 5  %}
+                                      <option value="{{ order_status.order_status_id }}" selected="selected">{{ order_status.name }}</option>
+                                  {% endif %}
+                                  <option value="{{ order_status.order_status_id }}" >{{ order_status.name }}</option>
+                              {% endif %}
+                          {% endfor %}
+                      </select>
+                      {% if error_order_status %}
+                          <div class="text-danger">{{ error_order_status }}</div>
+                      {% endif %}
+                      </div>
+                    </div>
+
+                    <div class="row mb-3">
+                      <label for="input-approved-status" class="col-sm-2 col-form-label" for="test">{{ payment_iyzico_language_name }}</label>
+                      <div class="col-sm-10">
+                      <select class="form-control" name="payment_iyzico_language">
+                          {% if payment_iyzico_language  is empty or payment_iyzico_language == 'null' %}
+                              <option value="null" selected="selected">{{checkout_language_automatic}}</option>
+                              <option value="TR">{{checkout_language_turkish}}</option>
+                              <option value="EN">{{checkout_language_english}}</option>
+                          {% elseif payment_iyzico_language == 'TR' %}
+                          <option value="null" >{{checkout_language_automatic}}</option>
+                          <option value="TR" selected="selected">{{checkout_language_turkish}}</option>
+                          <option value="EN">İngilizce</option>
+                          {% else %}
+                            <option value="null">{{checkout_language_automatic}}</option>
+                            <option value="TR">{{checkout_language_turkish}}</option>
+                            <option value="EN" selected="selected">{{checkout_language_english}}</option>
+
+                          {% endif %}
+                      </select>
+                      </div>
+                    </div>
+
+                    <div class="row mb-3">
+                      <label for="input-approved-status" class="col-sm-2 col-form-label" for="test">{{ cancel_order_status }}</label>
+                      <div class="col-sm-10">
+                      <select class="form-control" name="payment_iyzico_order_cancel_status">
+                          {% for order_status in order_statuses %}
+                              {% if order_status.order_status_id == payment_iyzico_order_cancel_status %}
+                                  <option value="{{ order_status.order_status_id }}" selected="selected">{{ order_status.name }}</option>
+                              {% else %}
+                                  {% if payment_iyzico_order_status == false and order_status.order_status_id == 7  %}
+                                      <option value="{{ order_status.order_status_id }}" selected="selected">{{ order_status.name }}</option>
+                                  {% endif %}
+                                  <option value="{{ order_status.order_status_id }}">{{ order_status.name }}</option>
+                              {% endif %}
+                          {% endfor %}
+                      </select>
+                      {% if error_cancel_order_status %}
+                          <div class="text-danger">{{ error_cancel_order_status }}</div>
+                      {% endif %}
+                      </div>
+                    </div>
+
+                    <div class="row mb-3">
+                      <label for="input-status" class="col-sm-2 col-form-label">{{ extension_status }}</label>
+                      <div class="col-sm-10">
+                        <div class="form-check form-switch form-switch-lg">
+                          <input type="hidden" name="payment_iyzico_status" value="0"/>
+                          <input type="checkbox" name="payment_iyzico_status" value="1" id="input-status" class="form-check-input"{% if payment_iyzico_status %} checked{% endif %}/>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row mb-3">
+                      <label for="input-sort-order" class="col-sm-2 col-form-label">{{ sort_order }}</label>
+                      <div class="col-sm-10">
+                      <input type="text" name="payment_iyzico_sort_order" value="{{payment_iyzico_sort_order}}" placeholder="{{ sort_order}}" size="1" class="form-control"/>
+                      </div>
+                    </div>
+                  </div>
+
+                        <button style="float:right;" type="submit" form="form-payment" data-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary"><i class="fa fa-save"></i></button>
+
+
+            </form>
+        </div>
+    </div>
+</div>
+</div>
+<script>
+    var acc = document.getElementsByClassName("accordionBox");
+    var i;
+    for (i = 0; i < acc.length; i++) {
+        acc[i].addEventListener("click", function() {
+            this.classList.toggle("active");
+            var panel = this.nextElementSibling;
+            if (panel.style.display === "block") {
+                panel.style.display = "none";
+            } else {
+                panel.style.display = "block";
+            }
+        });
+    }
+    function getApiValid() {
+        var e, n, t;
+<<<<<<< Updated upstream
+        return event.preventDefault(), e = document.getElementById("api_channel").value, n = document.getElementById("api_key").value, t = document.getElementById("secret_key").value, "live" == e ? l(n, t) : "sandbox" == e ? s(n, t) : (alert("Geçersiz istek."), !1)
+=======
+        return event.preventDefault(), e = document.getElementById("api_channel").value, n = document.getElementById("api_key").value, t = document.getElementById("api_key").value, "live" == e ? l(n, t) : "sandbox" == e ? s(n, t) : (alert("Geçersiz istek."), !1)
+>>>>>>> Stashed changes
+    }
+    function l(e, n) {
+        if ("sandbox-" == e.substring(0, 8) || "sandbox-" == n.substring(0, 8)) return alert("{{valid_live}}"), !1
+    }
+    function s(e, n) {
+        if ("sandbox-" != e.substring(0, 8) || "sandbox-" != n.substring(0, 8)) return alert("{{valid_sandbox}}"), !1
+    }
+</script>
+<style>
+    .panelBox p {
+        padding-left: 40px;
+    }
+</style>
+</div>
+{{ footer }}
