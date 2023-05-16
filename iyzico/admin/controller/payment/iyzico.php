@@ -6,7 +6,7 @@ class iyzico extends \Opencart\System\Engine\Controller {
 	private $error = array();
 	private $iyzico;
 	private $module_version      = VERSION;
-	private $module_product_name = '1.6';
+	private $module_product_name = '2.0';
 
 
 	private $fields = array(
@@ -148,7 +148,7 @@ class iyzico extends \Opencart\System\Engine\Controller {
         $data['footer']         = $this->load->controller('common/footer');
         $data['locale']         = $this->language->get('code');
 				$data['iyzico_webhook_url_key'] = $this->config->get('webhook_iyzico_webhook_url_key');
-			  $data['iyzico_webhook_url']  = HTTP_CATALOG.'index.php?route=extension/iyzico/payment/iyzico|webhook&key=' .$this->config->get('webhook_iyzico_webhook_url_key');
+			  $data['iyzico_webhook_url']  = HTTP_CATALOG.'index.php?route=extension/iyzico/payment/iyzico%7Cwebhook&key=' .$this->config->get('webhook_iyzico_webhook_url_key');
         $data['module_version'] = $this->module_product_name;
 				$data['iyzico_webhook_button'] = $this->config->get('payment_iyzico_webhook_active_button');
 
