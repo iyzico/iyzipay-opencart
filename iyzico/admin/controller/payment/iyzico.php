@@ -6,7 +6,7 @@ class iyzico extends \Opencart\System\Engine\Controller {
 	private $error = array();
 	private $iyzico;
 	private $module_version      = VERSION;
-	private $module_product_name = '2.0';
+	private $module_product_name = '2.1';
 
 
 	private $fields = array(

@@ -4,7 +4,7 @@ use stdClass;
 class iyzico extends  \Opencart\System\Engine\Controller {
 
     private $module_version      = VERSION;
-    private $module_product_name = '2.0';
+    private $module_product_name = '2.1';
 
     private $paymentConversationId;
     private $webhookToken;
@@ -195,7 +195,7 @@ class iyzico extends  \Opencart\System\Engine\Controller {
     }
 
 
-    public function getCallBack($webhook = null, $webhookPaymentConversationId = null ,$webhookToken = null)  {
+    public function getCallBack($webhook = null, $webhookPaymentConversationId = null ,$webhookToken = null ,$webhookIyziEventType = null)  {
 
 
         try {
@@ -688,14 +688,14 @@ class iyzico extends  \Opencart\System\Engine\Controller {
                     $createIyzicoSignature = base64_encode(sha1($secretKey . $this->iyziEventType . $this->webhookToken, true));
 
                     if ($this->iyziSignature == $createIyzicoSignature){
-                        $this->getCallBack('webhook', $params['paymentConversationId'], $params['token']);
+                        $this->getCallBack('webhook', $params['paymentConversationId'], $params['token'],$params['iyziEventType']);
                     }
                     else{
                         $this->webhookHttpResponse("signature_not_valid - X-IYZ-SIGNATURE geçersiz", 404);
                     }
                 }
                 else{
-                    $this->getCallBack('webhook', $params['paymentConversationId'], $params['token']);
+                    $this->getCallBack('webhook', $params['paymentConversationId'], $params['token'],$params['iyziEventType']);
                 }
             }
             else{
