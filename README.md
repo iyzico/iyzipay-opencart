@@ -6,13 +6,13 @@
 
 # Requirements
 ------------
-* PHP 5.6 and later.
+* PHP 7.4 and later.
 * cURL
-* Opencart 3.x
+* Opencart 4.x
 
 # Installation
 ---------------
-* upload folder "iyzipay-opencart.ocmod.zip" via opencart extension installer menu
+* upload folder "iyzico.ocmod.zip" via opencart extension installer menu
 * <a href="https://dev.iyzipay.com/tr/acik-kaynak/opencart">Detailed Info</a>
 
 
