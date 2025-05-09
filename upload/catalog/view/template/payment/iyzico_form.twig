@@ -1,0 +1,23 @@
+<script>
+    var iyziInit = undefined;
+    var iyziUcsInit = undefined;
+</script>
+{% if checkoutFormType == 'responsive' %}
+    <fieldset>
+        <legend>{{ iyzico_checkout_form_title }}</legend>
+        <p>
+            <b>{{ iyzico_checkout_form_desc }}</b>
+        </p>
+        <div class="border rounded p-3 mb-2">
+            <div id="iyzipay-checkout-form" class="responsive"></div>
+        </div>
+    </fieldset>
+{% endif %}
+{% if checkoutFormType == 'popup' %}
+    <fieldset>
+        <div class="border rounded p-3 mb-2">
+            <div id="iyzipay-checkout-form" class="popup"></div>
+        </div>
+    </fieldset>
+{% endif %}
+{{ checkoutFormContent }}
