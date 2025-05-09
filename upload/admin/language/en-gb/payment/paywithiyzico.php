@@ -1,6 +1,6 @@
 <?php
-	$_['heading_title']                 = 'iyzico Checkout Form';
-	$_['text_iyzico']                   = '<a href="http://www.iyzico.com/" target="_blank">iyzico</a>';
+	$_['heading_title']                 = 'Pay with iyzico';
+	$_['text_paywithiyzico']            = '<b><a href="https://www.iyzico.com/isim-icin/iyzico-ile-ode" target="_blank">Pay With iyzico</a></b>';
 	$_['general_select']                = 'Select';
 	$_['live']                          = 'Live';
 	$_['sandbox']                       = 'Sandbox / Test';
@@ -11,7 +11,6 @@
 	$_['apikey_field_tooltip']          = 'Your API key with including 32 digit letter and number.';
 	$_['secretkey_field_tooltip']       = 'Your Secret Key with including 32 digit letter and number.';
 	$_['view_select']                   = 'Design';
-	$_['payment_iyzico_language_name']  = 'Checkout language';
 	$_['order_status']                  = 'Order Status';
 	$_['cancel_order_status']           = 'Cancel Order Status';
 	$_['order_status_tooltip']          = 'New ordering status info';
@@ -31,7 +30,7 @@
 	$_['install_title']                 = 'Install Title';
 	$_['install_hello']                 = 'Hello';
 	$_['support']                       = 'Support';
-	$_['install_content']               = 'Welcome to iyzico Opencart install screen. <br> Live: &nbsp; &nbsp; &nbsp; &nbsp; <strong><a href="https://merchant.iyzipay.com">https://merchant.iyzipay.com</a></strong><br>
+	$_['install_content']               = 'Welcome to paywithiyzico Opencart install screen. <br> Live: &nbsp; &nbsp; &nbsp; &nbsp; <strong><a href="https://merchant.iyzipay.com">https://merchant.iyzipay.com</a></strong><br>
 	Sandbox:	&nbsp; <strong><a href="https://sandbox-merchant.iyzipay.com">https://sandbox-merchant.iyzipay.com</a></strong><br><br>
 	Help detail <strong>Help</strong> is click.';
 	$_['payment_title']                 = 'Payment Value';
@@ -47,23 +46,8 @@
 	$_['overlay_bottom_right_val']      = 'bottomRight';
 	$_['overlay_closed']                = 'Hidden';
 	$_['overlay_closed_val']            = 'hidden';
-	$_['iyzico_update_screen']          = 'IYZICO UPDATE SCREEN';
+	$_['paywithiyzico_update_screen']   = 'IYZICO UPDATE SCREEN';
 	$_['current_version_name']          = 'Old Version:';
 	$_['new_version_name']              = 'New Version:';
 	$_['description_name']              = 'Description:';
-	$_['iyzico_webhook']                = 'Webhook Integration';
-	$_['webhook_url_description']       = "Don't forget to do webhook Integration.";
-	$_['iyzico_webhook_url_key_error']  = "Webhook URL Error! Please, try these steps respectively.  1- Refresh web page 1-2 times. 2- If webhook url doesn't create , Please, after delete the iyzico plugin, re-install the iyzico plugin and save module settings. 3- Send an email to entegrasyon@iyzico.com";
-	$_['pwi_status_error']              = "Pay with iyzico module is not enable!";
-	$_['pwi_status_error_detail']       = "You can not access Settings of iyzico Checkout Form Module without installing the pay with iyzico module.";
-	$_['dev_iyzipay_opencart_link']     = "https://dev.iyzipay.com/tr/acik-kaynak/opencart";
-	$_['dev_iyzipay_detail']            = "Complete the installation of the Opencart 4.x - Pay with iyzico module via dev.iyzipay:";
-	$_['checkout_language_automatic']   = 'Automatic';
-	$_['checkout_language_turkish']     = 'Turkish';
-	$_['checkout_language_english']     = 'English';
-	$_['admin_active_button']           = 'Active';
-	$_['text_extension']                = 'Extensions';
-	$_['breadcrumb_heading_title']      = 'iyzico Module Settings';
-	$_['copy_clipboard_text']           = 'Copy to Clipboard: ';
-	$_['error_design']                  = 'Design Required!';
-	$_['text_info_label']               = '	&nbsp;If you have problems, please contact. <a href="mailto:entegrasyon@iyzico.com"> 	&nbsp;entegrasyon@iyzico.com</a>';
+	$_['pwi_module_setting_logo']       = 'paywithiyzico';
