@@ -1,0 +1,84 @@
+{{ header }}
+<div id="error-not-found" class="container">
+
+  <div class="row">{{ column_left }}
+    {% if column_left and column_right %}
+    {% set class = 'col-sm-6' %}
+    {% elseif column_left or column_right %}
+    {% set class = 'col-sm-9' %}
+    {% else %}
+    {% set class = 'col-sm-12' %}
+    {% endif %}
+    <div id="content" class="{{ class }}">{{ content_top }}
+<div class="table-responsive">
+
+<div class="successPayment">
+{% if locale =='tr'%}
+{% if credit_pending == '1'%}
+    <h1> Alışveriş Kredisi için başvurunuz alınmıştır. Başvurunuz, en kısa sürede sonuçlandırılacaktır.</h1>
+        {% else %}
+      <h1>Ödemeniz Alındı. </h1>
+        {% endif %}
+{% else %}
+  <h1>Your Payment Received. </h1>
+{% endif %}
+  <div>
+    <img src="{{success_icon}}" width="64" height="64" />
+  </div>
+</div>
+<br>
+<br>
+<div class="orderDetail">
+  <table class="table table-bordered table-hover">
+    <thead>
+      <tr>
+        <td class="text-left">{{ column_name }}</td>
+        <td class="text-left">{{ column_model }}</td>
+        <td class="text-right">{{ column_quantity }}</td>
+        <td class="text-right">{{ column_price }}</td>
+        <td class="text-right">{{ column_total }}</td>
+      </tr>
+    </thead>
+    <tbody>
+
+    {% for product in products %}
+    <tr>
+      <td class="text-left"><a href="{{ product.href }}">{{ product.name }}</a> {% for option in product.option %} <br />
+        &nbsp;<small> - {{ option.name }}: {{ option.value }}</small> {% endfor %}
+        {% if product.recurring %} <br />
+        <span class="label label-info">{{ text_recurring_item }}</span> <small>{{ product.recurring }}</small> {% endif %}</td>
+      <td class="text-left">{{ product.model }}</td>
+      <td class="text-right">{{ product.quantity }}</td>
+      <td class="text-right">{{ product.price }}</td>
+      <td class="text-right">{{ product.total }}</td>
+    </tr>
+    {% endfor %}
+    {% for voucher in vouchers %}
+    <tr>
+      <td class="text-left">{{ voucher.description }}</td>
+      <td class="text-left"></td>
+      <td class="text-right">1</td>
+      <td class="text-right">{{ voucher.amount }}</td>
+      <td class="text-right">{{ voucher.amount }}</td>
+    </tr>
+    {% endfor %}
+      </tbody>
+
+    <tfoot>
+
+    {% for total in totals %}
+    <tr>
+      <td colspan="4" class="text-right"><strong>{{ total.title }}:</strong></td>
+      <td class="text-right">{{ total.text }}</td>
+    </tr>
+    {% endfor %}
+      </tfoot>
+
+  </table>
+</div>
+
+</div>
+      {{ content_bottom }}</div>
+    {{ column_right }}</div>
+</div>
+{{ footer }}

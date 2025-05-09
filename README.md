@@ -12,7 +12,7 @@
 
 # Installation
 ---------------
-* upload folder "iyzico.ocmod.zip" via opencart extension installer menu
+* upload folder "paywithiyzico.ocmod.zip" via opencart extension installer menu
 * <a href="https://dev.iyzipay.com/tr/acik-kaynak/opencart">Detailed Info</a>
 
 
