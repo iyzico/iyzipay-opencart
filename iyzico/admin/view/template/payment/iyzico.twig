@@ -1,0 +1,301 @@
+{{ header }}
+{{ column_left }}
+<div id="content">
+	<div class="page-header">
+		<div class="container-fluid">
+			<div class="pull-right">
+				<button style="float:right;" type="submit" form="form-payment" data-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary">
+					<i class="fa fa-save"></i>
+				</button>
+				<a href="{{ cancel }}" style="float:right;" data-bs-toggle="tooltip" title="" class="btn btn-light" data-bs-original-title="{{ button_cancel }}" aria-label="{{ button_cancel }}">
+					<i class="fas fa-reply"></i>
+				</a>
+			</div>
+			<h1>
+				<i class="fa fa-credit-card"></i>
+				{{ heading_title }}
+			</h1>
+			<ol class="breadcrumb">
+				{% for breadcrumb in breadcrumbs %}
+					<li class="breadcrumb-item">
+						<a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a>
+					</li>
+				{% endfor %}
+			</ol>
+		</div>
+	</div>
+	<div class="container-fluid">
+		<div class="card">
+			<div class="card-header">
+				<i class="fa-solid fa-pencil me-2"></i>
+				{{heading_title}}
+				- v{{module_version}}
+			</div>
+			<div class="card-body">
+				<div class="panel-body">
+					<div id="error-messages" class="alert alert-danger" style="display: none;">
+						<ul id="error-list"></ul>
+					</div>
+					<form action="{{ action }}" method="POST" enctype="multipart/form-data" id="form-payment" class="form-horizontal">
+						<div class="tab-content">
+							{% if payment_iyzico_status != 1 %}
+								<div class="row p-2 mb-3">
+									<div class="alert alert-info" style="background-color: #d9edf7; color: #31708f; padding: 15px; border-radius: 5px; border: 1px solid #bce8f1;">
+										<span class="col-sm-12" style="display: inline-block;">{{text_info_label}}</span>
+									</div>
+								</div>
+							{% endif  %}
+							<div class="mb-3 row">
+								<label class="col-sm-2 col-form-label">Webhook URL</label>
+								<div class="col-sm-9">
+									<input id="webhookUrl" class="form-control" type="text" value="{{ iyzico_webhook_url }}" disabled readonly>
+								</div>
+								<div class="col-sm-1">
+									<button type="button" onclick="copyToClipboard()" class="btn btn-secondary">
+										<i class="fa fa-clipboard" aria-hidden="true"></i>
+									</button>
+								</div>
+							</div>
+
+							<div class="row mb-3">
+								<label for="api_channel" class="col-sm-2 col-form-label">
+									{{ api_field }}
+								</label>
+								<div class="col-sm-9">
+									<select name="payment_iyzico_api_channel" id="api_channel" class="form-select">
+										{% if payment_iyzico_api_channel == 'live'  %}
+											<option value="live" selected="selected">{{ live }}</option>
+											<option value="sandbox">{{ sandbox }}</option>
+										{% elseif payment_iyzico_api_channel == 'sandbox' %}
+											<option value="live">{{ live }}</option>
+											<option value="sandbox" selected="selected">{{ sandbox }}</option>
+										{% else   %}
+											<option value="live">{{ live }}</option>
+											<option value="sandbox">{{ sandbox }}</option>
+										{%  endif %}
+									</select>
+								</div>
+							</div>
+
+							<div class="row mb-3">
+								<label for="input-sort-order" class="col-sm-2 col-form-label" for="api_key">
+									{{ api_key }}
+								</label>
+								<div class="col-sm-9">
+									<input type="text" name="payment_iyzico_api_key" value="{{ payment_iyzico_api_key }}" placeholder="{{ api_key }}" id="api_key" class="form-control"/>
+								</div>
+							</div>
+
+							<input type="hidden" name="payment_iyzico_webhook_text" value="{{ payment_iyzico_webhook_text }}" class="form-control"/>
+
+							<div class="row mb-3">
+								<label for="input-sort-order" class="col-sm-2 col-form-label" for="secret_key">
+									{{ secret_key }}
+								</label>
+								<div class="col-sm-9">
+									<input type="text" name="payment_iyzico_secret_key" value="{{ payment_iyzico_secret_key }}" placeholder="{{ secret_key }}" id="secret_key" class="form-control"/>
+								</div>
+							</div>
+
+							<div class="row mb-3">
+								<label for="input-approved-status" class="col-sm-2 col-form-label" for="payment_iyzico_design">{{ view_select }}</label>
+								<div class="col-sm-9">
+									<select id="payment_iyzico_design" name="payment_iyzico_design" class="form-select">
+										<option value="">{{ general_select }}</option>
+										{% if payment_iyzico_design == 'popup'  %}
+											<option value="popup" selected="selected">Popup</option>
+											<option value="responsive">Responsive</option>
+										{% elseif payment_iyzico_design == 'responsive' %}
+											<option value="popup">Popup</option>
+											<option value="responsive" selected="selected">Responsive</option>
+										{% else %}
+											<option value="popup">Popup</option>
+											<option value="responsive">Responsive</option>
+										{% endif %}
+									</select>
+								</div>
+							</div>
+
+							<div class="row mb-3">
+								<label for="input-sort-order" class="col-sm-2 col-form-label" for="payment_iyzico_title">
+									{{ payment_title }}
+								</label>
+								<div class="col-sm-9">
+									{% if payment_iyzico_title %}
+										<input type="text" class="form-control" id="payment_iyzico_title" value="{{payment_iyzico_title}}" name="payment_iyzico_title" placeholder="{{ payment_title }}"/>
+									{% else %}
+										<input type="text" class="form-control" id="payment_iyzico_title" value="tr=Kredi ve Banka Kartı|en=Credit and Bank Debit" name="payment_iyzico_title" placeholder="{{ payment_title }}"/>
+									{% endif %}
+								</div>
+							</div>
+
+							<div class="row mb-3">
+								<label for="input-approved-status" class="col-sm-2 col-form-label" for="payment_iyzico_order_status">
+									{{ order_status }}
+								</label>
+								<div class="col-sm-9">
+									<select class="form-control" name="payment_iyzico_order_status" id="payment_iyzico_order_status">
+										{% for order_status in order_statuses %}
+											{% if order_status.order_status_id == payment_iyzico_order_status %}
+												<option value="{{ order_status.order_status_id }}" selected="selected">{{ order_status.name }}</option>
+											{% else %}
+												{% if payment_iyzico_order_status == false and order_status.order_status_id == 5  %}
+													<option value="{{ order_status.order_status_id }}" selected="selected">{{ order_status.name }}</option>
+												{% endif %}
+												<option value="{{ order_status.order_status_id }}">{{ order_status.name }}</option>
+											{% endif %}
+										{% endfor %}
+									</select>
+								</div>
+							</div>
+
+							<div class="row mb-3">
+								<label for="input-approved-status" class="col-sm-2 col-form-label" for="payment_iyzico_language">
+									{{ payment_iyzico_language_name }}
+								</label>
+								<div class="col-sm-9">
+									<select class="form-control" name="payment_iyzico_language" id="payment_iyzico_language">
+										{% if payment_iyzico_language  is empty or payment_iyzico_language == 'null' %}
+											<option value="null" selected="selected">{{checkout_language_automatic}}</option>
+											<option value="TR">{{checkout_language_turkish}}</option>
+											<option value="EN">{{checkout_language_english}}</option>
+										{% elseif payment_iyzico_language == 'TR' %}
+											<option value="null">{{checkout_language_automatic}}</option>
+											<option value="TR" selected="selected">{{checkout_language_turkish}}</option>
+											<option value="EN">İngilizce</option>
+										{% else %}
+											<option value="null">{{checkout_language_automatic}}</option>
+											<option value="TR">{{checkout_language_turkish}}</option>
+											<option value="EN" selected="selected">{{checkout_language_english}}</option>
+										{% endif %}
+									</select>
+								</div>
+							</div>
+
+							<div class="row mb-3">
+								<label for="input-approved-status" class="col-sm-2 col-form-label" for="payment_iyzico_order_cancel_status">
+									{{ cancel_order_status }}
+								</label>
+								<div class="col-sm-9">
+									<select class="form-control" name="payment_iyzico_order_cancel_status" id="payment_iyzico_order_cancel_status">
+										{% for order_status in order_statuses %}
+											{% if order_status.order_status_id == payment_iyzico_order_cancel_status %}
+												<option value="{{ order_status.order_status_id }}" selected="selected">{{ order_status.name }}</option>
+											{% else %}
+												{% if payment_iyzico_order_status == false and order_status.order_status_id == 7  %}
+													<option value="{{ order_status.order_status_id }}" selected="selected">{{ order_status.name }}</option>
+												{% endif %}
+												<option value="{{ order_status.order_status_id }}">{{ order_status.name }}</option>
+											{% endif %}
+										{% endfor %}
+									</select>
+								</div>
+							</div>
+
+							<div class="row mb-3">
+								<label for="input-approved-status" class="col-sm-2 col-form-label" for="test">
+									{{ buyer_protection }}
+								</label>
+								<div class="col-sm-9">
+									<select class="form-control" name="payment_iyzico_overlay_status">
+										<option value="">{{ general_select }}</option>
+										{% if payment_iyzico_overlay_status == 'bottomLeft' %}
+											<option value="{{overlay_bottom_left_val}}" selected="selected">{{ overlay_bottom_left }}</option>
+											<option value="{{overlay_bottom_right_val}}">{{overlay_bottom_right}}</option>
+											<option value="{{overlay_closed_val}}">{{overlay_closed}}</option>
+										{% elseif payment_iyzico_overlay_status == 'bottomRight' %}
+											<option value="{{overlay_bottom_left_val}}">{{ overlay_bottom_left }}</option>
+											<option value="{{overlay_bottom_right_val}}" selected="selected">{{overlay_bottom_right}}</option>
+											<option value="{{overlay_closed_val}}">{{overlay_closed}}</option>
+										{% elseif payment_iyzico_overlay_status == 'closed' %}
+											<option value="{{overlay_bottom_left_val}}">{{ overlay_bottom_left }}</option>
+											<option value="{{overlay_bottom_right_val}}">{{overlay_bottom_right}}</option>
+											<option value="{{overlay_closed_val}}" selected="selected">{{overlay_closed}}</option>
+										{% else  %}
+											<option value="{{overlay_bottom_left_val}}">{{ overlay_bottom_left }}</option>
+											<option value="{{overlay_bottom_right_val}}">{{overlay_bottom_right}}</option>
+											<option value="{{overlay_closed_val}}">{{overlay_closed}}</option>
+										{% endif %}
+									</select>
+								</div>
+							</div>
+
+							<div class="row mb-3">
+								<label for="input-status" class="col-sm-2 col-form-label">
+									{{ extension_status }}
+								</label>
+								<div class="col-sm-9">
+									<div class="form-check form-switch form-switch-lg">
+										<input type="hidden" name="payment_iyzico_status" value="0"/>
+										<input type="checkbox" name="payment_iyzico_status" value="1" id="input-status" class="form-check-input" {% if payment_iyzico_status %} checked {% endif %}/>
+									</div>
+								</div>
+							</div>
+
+							<div class="row mb-3">
+								<label for="input-sort-order" class="col-sm-2 col-form-label" id="payment_iyzico_sort_order">
+									{{ sort_order }}
+								</label>
+								<div class="col-sm-9">
+									<input type="text" name="payment_iyzico_sort_order" value="{{payment_iyzico_sort_order}}" placeholder="{{ sort_order}}" size="1" class="form-control"/>
+								</div>
+							</div>
+
+						</div>
+
+						<button style="float:right;" type="submit" form="form-payment" data-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary">
+							<i class="fa fa-save"></i>
+						</button>
+
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+	async function copyToClipboard() {
+		var copyText = document.getElementById("webhookUrl").value;
+		try {
+			await navigator.clipboard.writeText(copyText);
+			alert("{{ copy_clipboard_text }}" + copyText);
+		} catch (err) {
+			alert('Hata, kopyalanamadı');
+		}
+	}
+
+	document.getElementById('form-payment').addEventListener('submit', function(event) {
+		event.preventDefault();
+		var formData = new FormData(this);
+
+		fetch('{{ action }}', {
+			method: 'POST',
+			body: formData
+		}).then(response => response.json()).then(data => {
+			const errorDiv = document.getElementById('error-messages');
+			const errorList = document.getElementById('error-list');
+
+			errorList.innerHTML = '';
+
+			if (data.error) {
+				Object.keys(data.error).forEach(key => {
+					const li = document.createElement('li');
+					li.textContent = data.error[key];
+					errorList.appendChild(li);
+				});
+				errorDiv.style.display = 'block';
+			} else {
+				errorDiv.style.display = 'none';
+			}
+
+			if (data.success) {
+				alert(data.success);
+			}
+
+		}).catch(error => {
+			console.error('Error:', error);
+			alert('İşlem sırasında bir hata oluştu.');
+		});
+	});
+</script>
+{{ footer }}
