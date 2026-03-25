@@ -197,171 +197,149 @@
 
 		public function getCallBack($webhook = null, $webhookPaymentConversationId = null, $webhookToken = null, $webhookIyziEventType = null)
 		{
-			try {
-				$this->load->language('extension/payment/iyzico');
-				$this->load->model('checkout/order');
-				$this->load->model('extension/payment/iyzico');
-
-				// Webhook çağrılarında token kontrolü yapmayalım
-				if ((!isset($this->request->post['token']) || empty($this->request->post['token'])) && $webhook != "webhook") {
-					$errorMessage = 'INVALID_TOKEN';
-					throw new \Exception($errorMessage);
-				}
-
-				// Session'ı yenileyelim
-				if (!$webhook && isset($this->session->data['user_token'])) {
-					$this->session->data['user_token'] = $this->session->data['user_token'];
-				}
-
-				$options = new \Iyzipay\Options();
-				$options->setApiKey($this->config->get('payment_iyzico_api_key'));
-				$options->setSecretKey($this->config->get('payment_iyzico_secret_key'));
-				if ($this->config->get('payment_iyzico_api_channel') == 'sandbox') {
-					$options->setBaseUrl('https://sandbox-api.iyzipay.com');
-				} else {
-					$options->setBaseUrl('https://api.iyzipay.com');
-				}
-
-				$request = new \Iyzipay\Request\RetrieveCheckoutFormRequest();
-
-				if ($webhook == 'webhook') {
-					$conversation_id = $webhookPaymentConversationId;
-					$token           = $webhookToken;
-				} else {
-					$conversation_id = (int)$this->session->data['conversation_id'];
-					$order_id        = (int)$this->session->data['order_id'];
-					$token           = $this->request->post['token'];
-				}
-
-
-				$customer_id = isset($this->session->data['customer_id']) ? (int)$this->session->data['customer_id'] : 0;
-				$language    = $this->config->get('payment_iyzico_language');
-				if (empty($language) or $language == 'null') {
-					$request->setLocale($this->language->get('code'));
-				} elseif ($language == 'TR' or $language == 'tr') {
-					$request->setLocale('tr');
-				} else {
-					$request->setLocale('en');
-				}
-
-				$request->setConversationId($conversation_id);
-				$request->setToken($this->db->escape($token));
-
-				$response = \Iyzipay\Model\CheckoutForm::retrieve($request, $options);
-
-				if ($webhook == "webhook" && $webhookIyziEventType != 'CREDIT_PAYMENT_AUTH' && $response->getStatus() == 'failure') {
-					return $this->webhookHttpResponse("errorCode: " . $response->getErrorCode() . " - " . $response->getErrorMessage(), 404);
-				}
-
-				if ($webhook == "webhook") {
-					$order_id = $response->getBasketId();
-					$this->model_checkout_order->getOrder($order_id);
-
-					if ($webhookIyziEventType == 'CREDIT_PAYMENT_AUTH' && $response->getPaymentStatus() == 'PENDING_CREDIT') {
-						$orderMessage = 'Alışveriş kredisi başvurusu sürecindedir.';
-						$this->model_checkout_order->addOrderHistory($response->getBasketId(), 1, $orderMessage);
-						return $this->webhookHttpResponse("Order Exist - Alışveriş kredisi başvurusu sürecindedir.", 200);
-
-					}
-					if ($webhookIyziEventType == 'CREDIT_PAYMENT_AUTH' && $response->getStatus() == 'success') {
-						$orderMessage = 'Alışveriş kredisi işlemi başarıyla tamamlandı.';
-						$this->model_checkout_order->addOrderHistory($response->getBasketId(), 2, $orderMessage);
-						return $this->webhookHttpResponse("Order Exist - Alışveriş kredisi işlemi başarıyla tamamlandı.", 200);
-					}
-					if ($webhookIyziEventType == 'CREDIT_PAYMENT_INIT' && $response->getStatus() == 'INIT_CREDIT') {
-						$orderMessage = 'Alışveriş kredisi işlemi başlatıldı.';
-						$this->model_checkout_order->addOrderHistory($response->getBasketId(), 1, $orderMessage);
-						return $this->webhookHttpResponse("Order Exist - Alışveriş kredisi işlemi başlatıldı.", 200);
-					}
-
-					if ($webhookIyziEventType == 'CREDIT_PAYMENT_AUTH' && $response->getStatus() == 'FAILURE') {
-						$orderMessage = 'Alışveriş kredisi işlemi başarısız sonuçlandı.';
-						$this->model_checkout_order->addOrderHistory($response->getBasketId(), 7, $orderMessage);
-						return $this->webhookHttpResponse("Order Exist - Alışveriş kredisi işlemi başarısız sonuçlandı.", 200);
-					}
-				}
-
-				if ($webhook == "webhook") {
-					$order_id   = $response->getBasketId();
-					$order_info = $this->model_checkout_order->getOrder($order_id);
-
-					if ($order_info & $order_info['order_status_id'] == '5') {
-						return $this->webhookHttpResponse("Order Exist - Sipariş zaten var.", 200);
-					}
-				}
-
-				$iyzico_local_order               = new stdClass;
-				$iyzico_local_order->payment_id   = !empty($response->getPaymentId()) ? (int)$response->getPaymentId() : '';
-				$iyzico_local_order->order_id     = $order_id;
-				$iyzico_local_order->total_amount = !empty($response->getPaidPrice()) ? (float)$response->getPaidPrice() : '';
-				$iyzico_local_order->status       = $response->getPaymentStatus();
-				$this->model_extension_payment_iyzico->insertIyzicoOrder($iyzico_local_order);
-
-				if ($response->getPaymentStatus() != 'SUCCESS' || $response->getStatus() != 'success' || $order_id != $response->getBasketId()) {
-					$errorMessage = $response->getErrorMessage() !== null ? $response->getErrorMessage() : $this->language->get('payment_failed');
-					throw new \Exception($errorMessage);
-				}
-
-				if ($response->getCardUserKey() !== null) {
-					if ($customer_id) {
-						$cardUserKey = $this->model_extension_payment_iyzico->findUserCardKey($customer_id, $this->config->get('payment_iyzico_api_key'));
-						if ($response->getCardUserKey() != $cardUserKey) {
-							$this->model_extension_payment_iyzico->insertCardUserKey($customer_id, $response->getCardUserKey(), $this->config->get('payment_iyzico_api_key'));
-						}
-					}
-
-				}
-
-				$payment_id         = $this->db->escape($response->getPaymentId());
-				$payment_field_desc = $this->language->get('payment_field_desc');
-				if (!empty($payment_id)) {
-					$message = $payment_field_desc . $payment_id . "\n";
-				}
-
-				$installment = $response->getInstallment();
-
-				if ($installment > 1) {
-					$installement_field_desc = $this->language->get('installement_field_desc');
-					$this->model_extension_payment_iyzico->orderUpdateByInstallement($iyzico_local_order->order_id, $response->getPaidPrice());
-					$this->model_checkout_order->addOrderHistory($iyzico_local_order->order_id, $this->config->get('payment_iyzico_order_status'), $message);
-					$messageInstallement = $response->getCardFamily() . ' - ' . $response->getInstallment() . $installement_field_desc;
-					$this->model_checkout_order->addOrderHistory($iyzico_local_order->order_id, $this->config->get('payment_iyzico_order_status'), $messageInstallement);
-				} else {
-					$this->model_checkout_order->addOrderHistory($iyzico_local_order->order_id, $this->config->get('payment_iyzico_order_status'), $message);
-				}
-
-				if ($webhook == 'webhook') {
-					return $this->webhookHttpResponse("Order Created by Webhook - Sipariş webhook tarafından oluşturuldu.", 200);
-				}
-
-				$this->setWebhookText(0);
-				return $this->response->redirect($this->url->link('extension/payment/iyzico/successpage', '', true));
-
-			} catch (Exception $e) {
-				if ($response->getPaymentStatus() == 'INIT_BANK_TRANSFER' && $response->getStatus() == 'success') {
-					$orderMessage = 'iyzico Banka Havale/EFT ödemesi bekleniyor.';
-					$this->model_checkout_order->addOrderHistory($iyzico_local_order->order_id, $this->config->get('payment_iyzico_order_status'), $orderMessage);
-					$this->setWebhookText(0);
-					return $this->response->redirect($this->url->link('extension/payment/iyzico/successpage', '', true));
-				}
-
-				if ($webhook != 'webhook' && $response->getPaymentStatus() == 'PENDING_CREDIT' && $response->getStatus() == 'success') {
-					$orderMessage = 'Alışveriş kredisi işlemi başlatıldı.';
-					$this->model_checkout_order->addOrderHistory($iyzico_local_order->order_id, 1, $orderMessage);
-					$this->setWebhookText(1);
-					return $this->response->redirect($this->url->link('extension/payment/iyzico/successpage', '', true));
-				}
-				$this->setWebhookText(0);
-
-				if ($webhook == 'webhook') {
-					return $this->webhookHttpResponse("errorCode: " . $response->getErrorCode() . " - " . $response->getErrorMessage(), 404);
-				}
-
-				$errorMessage                                = $response->getErrorMessage() !== null ? $response->getErrorMessage() : $e->getMessage();
-				$this->session->data['iyzico_error_message'] = $errorMessage;
-
-				return $this->response->redirect($this->url->link('extension/payment/iyzico/errorpage', '', true));
-			}
+		    $response = null;
+		    $order_id = null;
+		    $iyzico_local_order = null;
+		
+		    try {
+		        $this->load->language('extension/payment/iyzico');
+		        $this->load->model('checkout/order');
+		        $this->load->model('extension/payment/iyzico');
+		
+		        if ((!isset($this->request->post['token']) || empty($this->request->post['token'])) && $webhook != "webhook") {
+		            throw new \Exception('INVALID_TOKEN');
+		        }
+		
+		        $options = new \Iyzipay\Options();
+		        $options->setApiKey($this->config->get('payment_iyzico_api_key'));
+		        $options->setSecretKey($this->config->get('payment_iyzico_secret_key'));
+		        $options->setBaseUrl(
+		            $this->config->get('payment_iyzico_api_channel') == 'sandbox'
+		                ? 'https://sandbox-api.iyzipay.com'
+		                : 'https://api.iyzipay.com'
+		        );
+		
+		        $request = new \Iyzipay\Request\RetrieveCheckoutFormRequest();
+		
+		        if ($webhook == 'webhook') {
+		            $conversation_id = $webhookPaymentConversationId;
+		            $token = $webhookToken;
+		        } else {
+		            $conversation_id = $this->session->data['conversation_id'] ?? null;
+		            $order_id = $this->session->data['order_id'] ?? null;
+		            $token = $this->request->post['token'] ?? null;
+		
+		            if (!$conversation_id || !$token) {
+		                throw new \Exception('Missing session or token');
+		            }
+		        }
+		
+		        $request->setLocale('tr');
+		        $request->setConversationId($conversation_id);
+		        $request->setToken($this->db->escape($token));
+		
+		        $response = \Iyzipay\Model\CheckoutForm::retrieve($request, $options);
+		
+		        if (!$response) {
+		            error_log("IYZICO NULL RESPONSE | token: $token | conversation: $conversation_id");
+		
+		            if ($webhook == 'webhook') {
+		                return $this->webhookHttpResponse("null response", 404);
+		            }
+		
+		            throw new \Exception('Iyzico response null');
+		        }
+		
+		        // WEBHOOK FAIL FAST
+		        if ($webhook == "webhook" && $response->getStatus() == 'failure') {
+		            return $this->webhookHttpResponse(
+		                $response->getErrorCode() . " - " . $response->getErrorMessage(),
+		                404
+		            );
+		        }
+		
+		        $order_id = $response->getBasketId();
+		        $order_info = $this->model_checkout_order->getOrder($order_id);
+		
+		        if (!$order_info) {
+		            throw new \Exception('Order not found');
+		        }
+		
+		        // ZATEN İŞLENMİŞ
+		        if ($webhook == "webhook" && $order_info && $order_info['order_status_id'] == '5') {
+		            return $this->webhookHttpResponse("Order already processed", 200);
+		        }
+		
+		        // ORDER SAVE
+		        $iyzico_local_order = new stdClass;
+		        $iyzico_local_order->payment_id = $response->getPaymentId();
+		        $iyzico_local_order->order_id = $order_id;
+		        $iyzico_local_order->total_amount = $response->getPaidPrice();
+		        $iyzico_local_order->status = $response->getPaymentStatus();
+		
+		        $this->model_extension_payment_iyzico->insertIyzicoOrder($iyzico_local_order);
+		
+		        // SUCCESS CHECK
+		        if (
+		            $response->getPaymentStatus() != 'SUCCESS' ||
+		            $response->getStatus() != 'success'
+		        ) {
+		            throw new \Exception(
+		                $response->getErrorMessage() ?: 'Payment failed'
+		            );
+		        }
+		
+		        // ORDER UPDATE
+		        $message = "Payment ID: " . $response->getPaymentId();
+		
+		        $this->model_checkout_order->addOrderHistory(
+		            $order_id,
+		            $this->config->get('payment_iyzico_order_status'),
+		            $message
+		        );
+		
+		        if ($webhook == 'webhook') {
+		            return $this->webhookHttpResponse("OK", 200);
+		        }
+		
+		        return $this->response->redirect(
+		            $this->url->link('extension/payment/iyzico/successpage', '', true)
+		        );
+		
+		    } catch (Exception $e) {
+		
+		        error_log("IYZICO ERROR: " . $e->getMessage());
+		
+		        // SAFE CHECK
+		        if ($response && $response->getPaymentStatus() == 'INIT_BANK_TRANSFER') {
+		            $this->model_checkout_order->addOrderHistory(
+		                $order_id,
+		                $this->config->get('payment_iyzico_order_status'),
+		                'Banka transfer bekleniyor'
+		            );
+		
+		            return $this->response->redirect(
+		                $this->url->link('extension/payment/iyzico/successpage', '', true)
+		            );
+		        }
+		
+		        if ($webhook == 'webhook') {
+		            $errorCode = $response ? $response->getErrorCode() : 'no_response';
+		            $errorMessage = $response ? $response->getErrorMessage() : $e->getMessage();
+		
+		            return $this->webhookHttpResponse(
+		                "$errorCode - $errorMessage",
+		                404
+		            );
+		        }
+		
+		        $this->session->data['iyzico_error_message'] =
+		            $response ? $response->getErrorMessage() : $e->getMessage();
+		
+		        return $this->response->redirect(
+		            $this->url->link('extension/payment/iyzico/errorpage', '', true)
+		        );
+		    }
 		}
 
 		public function errorPage()
