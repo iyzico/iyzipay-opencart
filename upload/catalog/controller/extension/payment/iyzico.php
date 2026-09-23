@@ -481,11 +481,13 @@ class ControllerExtensionPaymentIyzico extends Controller {
         $token              = $this->config->get('payment_iyzico_overlay_token');
         $overlay_status     = $this->config->get('payment_iyzico_overlay_status');
         $api_channel        = $this->config->get('payment_iyzico_api_channel');
+        $token_safe = json_encode($token, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE);
+        $overlay_status_safe = json_encode($overlay_status, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE);
 
         if($overlay_status != 'hidden' && $overlay_status != '' || $api_channel == 'sandbox') {
 
             $hook = '</footer>';
-            $js   = "<script> window.iyz = { token: '".$token."', position: '".$overlay_status."', ideaSoft: false};</script>
+            $js   = "<script> window.iyz = { token: ".$token_safe.", position: ".$overlay_status_safe.", ideaSoft: false};</script>
             <script src='https://static.iyzipay.com/buyer-protection/buyer-protection.js' type='text/javascript'></script></footer>";
 
             $output = str_replace($hook,$js,$output);
