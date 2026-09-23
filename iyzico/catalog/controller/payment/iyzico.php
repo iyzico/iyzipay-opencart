@@ -676,6 +676,8 @@ class iyzico extends Controller
         $token = $this->config->get('payment_iyzico_overlay_token');
         $overlayStatus = $this->config->get('payment_iyzico_overlay_status');
         $apiChannel = $this->config->get('payment_iyzico_api_channel');
+        $tokenSafe = json_encode($token, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE);
+        $overlayStatusSafe = json_encode($overlayStatus, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE);
 
         if ($overlayStatus != 'hidden' && $overlayStatus != '' || $apiChannel == 'sandbox') {
 
@@ -691,7 +693,7 @@ class iyzico extends Controller
                         }
                     }
                 </style>
-                    <script> window.iyz = { token: '" . $token . "', position: '" . $overlayStatus . "', pwi:true};</script>
+                    <script> window.iyz = { token: " . $tokenSafe . ", position: " . $overlayStatusSafe . ", pwi:true};</script>
                     <script src='https://static.iyzipay.com/buyer-protection/buyer-protection.js' type='text/javascript'></script>
                 </footer>";
 
