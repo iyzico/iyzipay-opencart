@@ -5,7 +5,7 @@
 
 	class ControllerExtensionPaymentIyzico extends Controller
 	{
-		private $module_version = '2.6.0';
+		private $module_version = '2.6.1';
 		private $error = array();
 		private $fields = array(
 			array(
